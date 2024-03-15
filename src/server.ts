@@ -3,7 +3,7 @@ import { config } from "./configs/config";
 import { connectDB } from "./configs/db";
 const logger = require("morgan");
 import cors from "cors";
-import http from "http";
+import https from "http";
 import Logging from "./library/Logging";
 const jwt = require("jsonwebtoken");
 
@@ -46,7 +46,6 @@ app.use("/auth", async (req: Request, res: Response) => {
     if (req.headers.authorization !== undefined) {
       const token = req.headers.authorization.split(" ")[1];
       const decoded = await jwt.verify(token, config.jwt.secret);
-
       req.headers.username = decoded.username;
       res.status(200).send("Authorized");
     } else {
@@ -117,7 +116,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 connectDB().then((res) => {
-  http.createServer(app).listen(config.server.port, () => {
+  https.createServer(app).listen(config.server.port, () => {
     Logging.info(`Server is running on port ${config.server.port}`);
   });
   // app.listen(config.server.port, () => {
