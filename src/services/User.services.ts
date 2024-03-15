@@ -1,0 +1,203 @@
+import { Request, Response } from "express";
+import argon2 from "argon2";
+const jwt = require("jsonwebtoken");
+import User from "../models/User.model";
+import { config } from "../configs/config";
+import { sender } from "../helpers/utils";
+
+const validateInput = (req: Request) => {
+  const error: any = {};
+
+  let username = req.body.username?.trim();
+  if (!username) {
+    error["username"] = "Username is required";
+  } else if (username.length < 6) {
+    error["username"] = "Username must be at least 6 characters";
+  } else if (username.split(" ").length > 1) {
+    error["username"] = "Username must not contain spaces";
+  }
+
+  let name = req.body.name?.trim();
+  if (!name) {
+    error["name"] = "Name is required";
+  } else if (name.length < 6) {
+  }
+
+  let email = req.body.email?.trim();
+  if (!email) {
+    error["email"] = "Email is required";
+  }
+
+  let password = req.body.password?.trim();
+  if (!password) {
+    error["password"] = "Password is required";
+  } else if (password.length < 8) {
+    error["password"] = "Password must be at least 8 characters";
+  } else if (password.split(" ").length > 1) {
+    error["password"] = "Password must not contain spaces";
+  } else if (
+    password.search(/[a-z]/) < 0 ||
+    password.search(/[A-Z]/) < 0 ||
+    password.search(/[0-9]/) < 0 ||
+    password.search(/[!@#$%^&*]/) < 0
+  ) {
+    error["password"] =
+      "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character";
+  }
+  return error;
+};
+
+const findByUsername = async (username: string) => {
+  return User.findOne({ username: username });
+};
+
+const isExistUser = async (username: String, email?: String) => {
+  const user = await User.findOne({}).or([
+    { username: username },
+    { email: email },
+  ]);
+  return user;
+};
+
+const createUserService = async ({
+  name,
+  username,
+  email,
+  password,
+}: {
+  name: string;
+  username: string;
+  email: string;
+  password: string;
+}) => {
+  const user = new User({
+    name,
+    username,
+    email,
+    password: await argon2.hash(password),
+  });
+
+  await user.save();
+
+  const token = jwt.sign({ username: user.username }, config.jwt.secret);
+  return {
+    status: 200,
+    message: {
+      username: user.username,
+      token: token,
+    },
+  };
+};
+
+const loginUserService = async ({
+  username,
+  password,
+}: {
+  username: string;
+  password: string;
+}) => {
+  const user = await isExistUser(username);
+  if (user) {
+    const match = await argon2.verify(user.password, password);
+    if (match) {
+      const token = jwt.sign(
+        { username: user.username, role: user.role },
+        config.jwt.secret
+      );
+      return {
+        status: 200,
+        message: {
+          username: user.username,
+          token: token,
+        },
+      };
+    } else {
+      return {
+        status: 400,
+        message: "Wrong username or password",
+      };
+    }
+  } else {
+    return {
+      status: 400,
+      message: "Wrong username or password",
+    };
+  }
+};
+
+const forgotPasswordService = async (email: string) => {
+  const user = await User.findOne({ email: email });
+  if (!user) {
+    return {
+      status: 400,
+      message: "User not found",
+    };
+  } else {
+    const token = jwt.sign({ email: user.email }, config.jwt.secret, {
+      expiresIn: "1h",
+    });
+
+    const mailOptions = {
+      from: "hhoang.it@hotmail.com",
+      to: email,
+      subject: "Reset password",
+      html: `<h2>Please click on the link below to reset your password</h2>
+    <a href="http://localhost:3000/reset-password/${token}">Reset password</a>`,
+    };
+    try {
+      sender.sendMail(mailOptions, (error: any, info: any) => {
+        if (error) {
+          console.log(error);
+          return {
+            status: 400,
+            message: "Error sending email",
+          };
+        } else {
+          console.log("Email sent: " + info.response);
+          return {
+            status: 200,
+            message: "Email sent",
+          };
+        }
+      });
+    } catch (error) {
+      console.log(error);
+      return {
+        status: 400,
+        message: "Error sending email",
+      };
+    }
+  }
+};
+
+// const resetPasswordService = async (req: Request, res: Response) => {
+//   console.log(req.body);
+//   const { token, password } = req.body;
+//   if (!token || !password) {
+//     res.status(400).send("Missing fields");
+//     return;
+//   }
+//   try {
+//     const decoded = jwt.verify(token, config.jwt.secret);
+//     const user = await User.findOne({ email: decoded.email });
+//     if (!user) {
+//       res.status(400).send("User not found");
+//       return;
+//     }
+//     user.password = await argon2.hash(password);
+//     await user.save();
+//     res.status(200).send("Password reset");
+//   } catch (error) {
+//     console.log(error);
+//     res.status(400).send("Error resetting password");
+//   }
+// };
+
+export {
+  createUserService,
+  findByUsername,
+  isExistUser,
+  loginUserService,
+  forgotPasswordService,
+  // resetPasswordService,
+};
