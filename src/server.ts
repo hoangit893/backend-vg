@@ -1,11 +1,11 @@
 import express, { NextFunction, Request, Response } from "express";
 import { config } from "./configs/config";
 import { connectDB } from "./configs/db";
-const logger = require("morgan");
 import cors from "cors";
 import https from "http";
 import Logging from "./library/Logging";
 const jwt = require("jsonwebtoken");
+const hsts = require("hsts");
 
 //Routes
 import {
@@ -18,6 +18,13 @@ import {
 
 const app = express();
 
+app.use(
+  hsts({
+    maxAge: 31536000, // Must be at least 1 year to be approved
+    includeSubDomains: true, // Must be enabled to be approved
+    preload: true,
+  })
+);
 // ** MIDDLEWARES **
 //* CORS
 app.use(cors());

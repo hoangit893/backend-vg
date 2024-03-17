@@ -27,6 +27,7 @@
     "esm": "^3.2.25",
     "express-validator": "^7.0.1",
     "globby": "^10.0.1",
+    "hsts": "^2.2.0",
     "joi": "^17.12.2",
     "jsonwebtoken": "^9.0.2",
     "mongoose": "^8.2.0",
