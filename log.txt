@@ -493,3 +493,8 @@ Server is running on port 3000
 Request URL: /user/forgotpassword | Request Type: POST | Request IP: ::ffff:127.0.0.1 | Request Time: 3/19/2024, 2:24:37 PM  
 Response Status: [200]  Response Time: [3/19/2024, 2:24:37 PM]  
 Server is running on port 3000  
+Server is running on port 3000  
+Request URL: /user/forgotpassword | Request Type: POST | Request IP: ::ffff:127.0.0.1 | Request Time: 3/19/2024, 2:28:58 PM  
+Response Status: [200]  Response Time: [3/19/2024, 2:28:58 PM]  
+Request URL: /user/forgotpassword | Request Type: POST | Request IP: ::ffff:127.0.0.1 | Request Time: 3/19/2024, 2:38:56 PM  
+Response Status: [200]  Response Time: [3/19/2024, 2:38:56 PM]  
