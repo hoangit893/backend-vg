@@ -1,10 +1,9 @@
 import express, { Request, Response } from "express";
 import { auth } from "../middlewares/auth";
-import { authManager } from "../middlewares/authManager";
 import { createChallenge } from "../controllers/Challenge.controller";
 const challangeRoute = express.Router();
 
-challangeRoute.post("/create", authManager, (req: Request, res: Response) =>
+challangeRoute.post("/create", auth, (req: Request, res: Response) =>
   createChallenge(req, res)
 );
 

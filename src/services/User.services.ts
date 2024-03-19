@@ -158,28 +158,42 @@ const forgotPasswordService = async (email: string) => {
   }
 };
 
-// const resetPasswordService = async (req: Request, res: Response) => {
-//   console.log(req.body);
-//   const { token, password } = req.body;
-//   if (!token || !password) {
-//     res.status(400).send("Missing fields");
-//     return;
-//   }
-//   try {
-//     const decoded = jwt.verify(token, config.jwt.secret);
-//     const user = await User.findOne({ email: decoded.email });
-//     if (!user) {
-//       res.status(400).send("User not found");
-//       return;
-//     }
-//     user.password = await argon2.hash(password);
-//     await user.save();
-//     res.status(200).send("Password reset");
-//   } catch (error) {
-//     console.log(error);
-//     res.status(400).send("Error resetting password");
-//   }
-// };
+const resetPasswordService = async ({
+  token,
+  password,
+}: {
+  token: string;
+  password: string;
+}) => {
+  if (!token || !password) {
+    return {
+      status: 400,
+      message: "Token and password are required",
+    };
+  }
+  try {
+    const decoded = jwt.verify(token, config.jwt.secret);
+    const user = await User.findOne({ email: decoded.email });
+    if (!user) {
+      return {
+        status: 400,
+        message: "User not found",
+      };
+    }
+    user.password = await argon2.hash(password);
+    await user.save();
+    return {
+      status: 200,
+      message: "Password reset successfully",
+    };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: 400,
+      message: "Invalid token",
+    };
+  }
+};
 
 export {
   createUserService,
@@ -187,5 +201,5 @@ export {
   isExistUser,
   loginUserService,
   forgotPasswordService,
-  // resetPasswordService,
+  resetPasswordService,
 };

@@ -10,6 +10,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       const decoded = await jwt.verify(token, config.jwt.secret);
       req.body.username = decoded.username;
       req.headers.username = decoded.username;
+      req.headers.role = decoded.role;
       next();
     } else {
       res.status(401).send("Unauthorized");

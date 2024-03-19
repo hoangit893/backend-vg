@@ -5,6 +5,10 @@ import {
 } from "../services/Topic.services";
 
 const createTopic = async (req: Request, res: Response) => {
+  if (req.headers.role !== "admin") {
+    res.status(401).json({ message: "Forbidden" });
+    return;
+  }
   const topic: { topicName: string; description?: string } = req.body;
   try {
     // Your logic here

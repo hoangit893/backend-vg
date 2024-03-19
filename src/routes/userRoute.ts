@@ -3,6 +3,7 @@ import {
   createUser,
   loginUser,
   forgotPassword,
+  resetPassword,
 } from "../controllers/User.controller";
 const userRoute = express.Router();
 
@@ -24,8 +25,8 @@ userRoute.post("/forgotpassword", (req: Request, res: Response) =>
   forgotPassword(req, res)
 );
 
-// userRoute.post("/resetpassword", (req: Request, res: Response) => {
-//   resetPasswordService(req, res);
-// });
+userRoute.post("/resetpassword", (req: Request, res: Response) => {
+  resetPassword(req, res);
+});
 
 export default userRoute;

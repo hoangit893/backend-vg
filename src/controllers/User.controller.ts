@@ -5,6 +5,7 @@ import {
   forgotPasswordService,
   isExistUser,
   loginUserService,
+  resetPasswordService,
   // forgotPasswordService,
   // resetPasswordService,
 } from "../services/User.services";
@@ -50,4 +51,10 @@ const forgotPassword = async (req: Request, res: Response) => {
   }
 };
 
-export { createUser, loginUser, forgotPassword };
+const resetPassword = async (req: Request, res: Response) => {
+  const { token, password } = req.body;
+  const response = await resetPasswordService({ token, password });
+  res.status(response.status).json(response.message);
+};
+
+export { createUser, loginUser, forgotPassword, resetPassword };
