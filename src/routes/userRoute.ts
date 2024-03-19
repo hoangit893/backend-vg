@@ -1,5 +1,9 @@
 import express, { Request, Response } from "express";
-import { createUser, loginUser } from "../controllers/User.controller";
+import {
+  createUser,
+  loginUser,
+  forgotPassword,
+} from "../controllers/User.controller";
 const userRoute = express.Router();
 
 userRoute.get("/", (req: Request, res: Response) => {
@@ -16,9 +20,9 @@ userRoute.post("/create", (req: Request, res: Response) =>
 
 userRoute.post("/login", (req: Request, res: Response) => loginUser(req, res));
 
-// userRoute.post("/forgotpassword", (req: Request, res: Response) =>
-//   forgotPasswordService(req, res)
-// );
+userRoute.post("/forgotpassword", (req: Request, res: Response) =>
+  forgotPassword(req, res)
+);
 
 // userRoute.post("/resetpassword", (req: Request, res: Response) => {
 //   resetPasswordService(req, res);

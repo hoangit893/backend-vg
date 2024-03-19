@@ -1,4 +1,4 @@
-import { Request, Response, response } from "express";
+import { Request, Response } from "express";
 import {
   createUserService,
   findByUsername,
@@ -39,12 +39,12 @@ const loginUser = async (req: Request, res: Response) => {
   const response = await loginUserService(loginInfo);
   res.status(response.status).json(response.message);
 };
-
 const forgotPassword = async (req: Request, res: Response) => {
   const { email } = req.body;
   const response = await forgotPasswordService(email);
+  console.log(response);
   if (response) {
-    res.status(response.status).json(response.message);
+    res.status(200).json(response);
   } else {
     res.status(500).json({ message: "Internal server error" });
   }

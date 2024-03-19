@@ -14,10 +14,11 @@ export const authManager = async (
       const decoded = await jwt.verify(token, config.jwt.secret);
       req.body.username = decoded.username;
       req.headers.username = decoded.username;
-      req.headers.role = decoded.role;
-      next();
+      if ((decoded.role = "admin")) {
+        next();
+      } else return res.status(401).send("Forbidden");
     } else {
-      res.status(403).send("Forbidden");
+      res.status(401).send("Unauthorized");
     }
   } catch (error) {
     console.log(error);

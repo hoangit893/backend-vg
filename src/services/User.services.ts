@@ -132,41 +132,29 @@ const forgotPasswordService = async (email: string) => {
       status: 400,
       message: "User not found",
     };
-  } else {
-    const token = jwt.sign({ email: user.email }, config.jwt.secret, {
-      expiresIn: "1h",
-    });
+  }
+  const token = await jwt.sign({ email: user.email }, config.jwt.secret, {
+    expiresIn: "1h",
+  });
 
-    const mailOptions = {
-      from: "hhoang.it@hotmail.com",
-      to: email,
-      subject: "Reset password",
-      html: `<h2>Please click on the link below to reset your password</h2>
+  const mailOptions = {
+    from: "hhoang.it@hotmail.com",
+    to: email,
+    subject: "Reset password",
+    html: `<h2>Please click on the link below to reset your password</h2>
     <a href="http://localhost:3000/reset-password/${token}">Reset password</a>`,
+  };
+  let info = await sender.sendMail(mailOptions);
+  if (info.rejected.length > 0) {
+    return {
+      status: 500,
+      message: "Error sending email",
     };
-    try {
-      sender.sendMail(mailOptions, (error: any, info: any) => {
-        if (error) {
-          console.log(error);
-          return {
-            status: 400,
-            message: "Error sending email",
-          };
-        } else {
-          console.log("Email sent: " + info.response);
-          return {
-            status: 200,
-            message: "Email sent",
-          };
-        }
-      });
-    } catch (error) {
-      console.log(error);
-      return {
-        status: 400,
-        message: "Error sending email",
-      };
-    }
+  } else {
+    return {
+      status: 200,
+      message: "Email sent",
+    };
   }
 };
 

@@ -4,12 +4,13 @@ const Schema = mongoose.Schema;
 const questionSchema = new Schema({
   type: {
     type: String,
-    enum: ["single-choice", "multi-choice", "rerange"],
+    enum: ["single-choice", "multi-choice", "arrange"],
   },
   question: {
     type: String,
+    required: true,
   },
-  challengeSchema: {
+  challengeId: {
     type: Schema.Types.ObjectId,
     required: true,
   },
