@@ -1,36 +1,40 @@
 import { Request, Response } from "express";
 import Question from "../models/Question.model";
 import Challenge from "../models/Challenge.model";
+import { stat } from "fs";
 
-const createQuestionService = async (req: Request, res: Response) => {
-  const { type, question, challengeName } = req.body;
-
-  if (!type || !question || !challengeName) {
-    res.status(400).send("Missing fields");
-    return;
-  }
-
-  let challenge = await Challenge.findOne({ nameChallenge: challengeName });
-
-  if (!challenge) {
-    res.status(400).send("Challenge not found");
-    return;
-  }
-
+const createQuestionService = async (
+  type: String,
+  question: String,
+  challengeId: any,
+  answerList: Array<{
+    value: String;
+    isCorrect: Boolean;
+  }>
+) => {
   try {
     const newQuestion = new Question({
       type,
       question,
-      challengeSchema: challenge.id,
+      challengeId,
+      answerList,
     });
-
-    await newQuestion.save();
-  } catch (error) {
-    console.log(error);
-    res.status(400).send("Error creating question");
+    newQuestion.save();
+    return {
+      status: 200,
+      message: {
+        message: "Question created",
+        data: newQuestion,
+      },
+    };
+  } catch (error: any) {
+    return {
+      status: 500,
+      message: {
+        error: error.message,
+      },
+    };
   }
-
-  res.status(200).send("Question created !!");
 };
 
 export { createQuestionService };

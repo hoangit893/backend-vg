@@ -1,6 +1,16 @@
 import Challenge from "../models/Challenge.model";
 import Topic from "../models/Topic.model";
 
+const getChallengeService = async () => {
+  const challenges = await Challenge.find();
+  return {
+    status: 200,
+    message: {
+      challenges,
+    },
+  };
+};
+
 const createChallengeService = async ({
   challengeName,
   level,
@@ -13,16 +23,9 @@ const createChallengeService = async ({
   level: string;
   topicName: string;
   point: number;
-  img: string;
+  img?: string;
   description?: string;
 }) => {
-  if (!challengeName || !level || !topicName) {
-    return {
-      status: 400,
-      message: { error: "Challenge name, level and topic name are required" },
-    };
-  }
-
   const isExistChallenge = await Challenge.findOne({
     challengeName: challengeName,
   });
@@ -66,8 +69,35 @@ const createChallengeService = async ({
 
   return {
     status: 200,
-    message: "Challenge created !!",
+    message: {
+      message: "Challenge created ",
+    },
   };
 };
 
-export { createChallengeService };
+const getChallengeByTopicService = async (topicID: string) => {
+  const topic = await Topic.findOne({ _id: topicID });
+  if (!topic) {
+    return {
+      status: 404,
+      message: {
+        error: "Topic not found",
+      },
+    };
+  }
+  const challenges = await Challenge.find({ topicId: topicID }).populate(
+    "topicId"
+  );
+  return {
+    status: 200,
+    message: {
+      challenges,
+    },
+  };
+};
+
+export {
+  createChallengeService,
+  getChallengeByTopicService,
+  getChallengeService,
+};

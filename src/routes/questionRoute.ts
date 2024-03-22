@@ -1,9 +1,10 @@
 import express, { Request, Response } from "express";
+import { createQuestion } from "../controllers/Question.controller";
+
 const questionRoute = express.Router();
-import { createQuestionService } from "../services/Question.services";
 
 questionRoute.post("/create", (req: Request, res: Response) =>
-  createQuestionService(req, res)
+  createQuestion(req, res)
 );
 
 export default questionRoute;

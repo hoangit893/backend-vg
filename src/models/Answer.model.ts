@@ -1,3 +1,4 @@
+import { ref } from "joi";
 import mongoose from "mongoose";
 const Schema = mongoose.Schema;
 
@@ -10,9 +11,9 @@ const answerSchema = new Schema({
     type: Boolean,
     required: true,
   },
-  questionSchema: {
+  questionId: {
     type: Schema.Types.ObjectId,
-    required: true,
+    ref: "Question",
   },
 });
 

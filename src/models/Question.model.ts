@@ -1,4 +1,6 @@
+import { ref } from "joi";
 import mongoose from "mongoose";
+import Answer from "./Answer.model";
 const Schema = mongoose.Schema;
 
 const questionSchema = new Schema({
@@ -10,9 +12,13 @@ const questionSchema = new Schema({
     type: String,
     required: true,
   },
+  answerList: {
+    type: [{ value: String, isCorrect: Boolean }],
+    required: true,
+  },
   challengeId: {
     type: Schema.Types.ObjectId,
-    required: true,
+    ref: "Challenge",
   },
 });
 

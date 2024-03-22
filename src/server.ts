@@ -1,3 +1,5 @@
+#!/usr/bin/env ts-node
+
 import express, { NextFunction, Request, Response } from "express";
 import { config } from "./configs/config";
 import { connectDB } from "./configs/db";

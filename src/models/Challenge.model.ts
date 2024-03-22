@@ -22,7 +22,7 @@ const challengeSchema = new Schema({
   },
   topicId: {
     type: Schema.Types.ObjectId,
-    required: true,
+    ref: "Topic",
   },
 });
 
