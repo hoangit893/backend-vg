@@ -142,7 +142,7 @@ const forgotPasswordService = async (email: string) => {
     to: email,
     subject: "Reset password",
     html: `<h2>Please click on the link below to reset your password</h2>
-    <a href="http://localhost:5173/reset-password/${token}">Reset password</a>`,
+    <a href="http://localhost:5173/reset-password/?token=${token}">Reset password</a>`,
   };
   let info = await sender.sendMail(mailOptions);
   if (info.rejected.length > 0) {
