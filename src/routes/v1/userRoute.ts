@@ -5,8 +5,8 @@ import {
   forgotPassword,
   resetPassword,
   updateUser,
-} from "../controllers/User.controller";
-import { auth } from "../middlewares/auth";
+} from "../../controllers/User.controller";
+import { auth } from "../../middlewares/auth";
 const userRoute = express.Router();
 
 userRoute.get("/", (req: Request, res: Response) => {

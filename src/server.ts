@@ -10,13 +10,7 @@ const jwt = require("jsonwebtoken");
 const hsts = require("hsts");
 
 //Routes
-import {
-  userRoute,
-  questionRoute,
-  answerRoute,
-  challangeRoute,
-  topicRoute,
-} from "./routes/Routes";
+import apiV1 from "./routes/v1/Routes";
 
 const app = express();
 
@@ -79,8 +73,8 @@ app.get("/ping", (req: Request, res: Response) => {
   res.send("Hello World");
 });
 
-//* USER
-app.use("/user", userRoute);
+//* API
+app.use("/api/v1/", apiV1);
 
 //* AUTH
 // app.use(async (req: Request, res: Response) => {
@@ -106,17 +100,6 @@ app.use("/user", userRoute);
 //   }
 // });
 
-//*TOPIC
-app.use("/topic", topicRoute);
-
-//* CHALLENGE
-app.use("/challenge", challangeRoute);
-
-//* QUESTION
-app.use("/question", questionRoute);
-
-//* ANSWER
-app.use("/answer", answerRoute);
 app.use((req: Request, res: Response, next: NextFunction) => {
   const error = new Error("not found");
   res.status(404).json({

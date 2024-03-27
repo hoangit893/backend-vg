@@ -1,10 +1,13 @@
 import express, { Request, Response } from "express";
-import { auth } from "../middlewares/auth";
+import { auth } from "../../middlewares/auth";
 import {
   createChallenge,
   getChallenge,
-} from "../controllers/Challenge.controller";
-import { getQuestions, getQuestion } from "../controllers/Question.controller";
+} from "../../controllers/Challenge.controller";
+import {
+  getQuestions,
+  getQuestion,
+} from "../../controllers/Question.controller";
 const challangeRoute = express.Router();
 
 challangeRoute.get("/", auth, (req: Request, res: Response) => {
