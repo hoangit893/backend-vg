@@ -5,7 +5,7 @@ import { config } from "./configs/config";
 import { connectDB } from "./configs/db";
 import cors from "cors";
 import https from "http";
-import Logging from "./library/Logging";
+import Logging from "./helpers/Logging";
 const jwt = require("jsonwebtoken");
 const hsts = require("hsts");
 

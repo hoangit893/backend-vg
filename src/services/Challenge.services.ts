@@ -90,9 +90,8 @@ const getChallengeByTopicService = async (topicID: string) => {
   );
   return {
     status: 200,
-    message: {
-      challenges,
-    },
+
+    challenges,
   };
 };
 

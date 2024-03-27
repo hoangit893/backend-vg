@@ -1,0 +1,36 @@
+[{
+  "_id": {
+    "$oid": "65fb22b55888fc4c9becdf9e"
+  },
+  "challengeName": "C1",
+  "level": "easy",
+  "point": 100,
+  "topicId": {
+    "$oid": "65fb1bad94888011b25f096d"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65fb2317e604613bcd9c1c74"
+  },
+  "challengeName": "C3",
+  "level": "easy",
+  "point": 100,
+  "topicId": {
+    "$oid": "65fb1bad94888011b25f096d"
+  },
+  "__v": 0
+},
+{
+  "_id": {
+    "$oid": "65fc330965fe501320af08e3"
+  },
+  "challengeName": "C4",
+  "level": "easy",
+  "point": 100,
+  "topicId": {
+    "$oid": "65fc330165fe501320af08df"
+  },
+  "__v": 0
+}]

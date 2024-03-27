@@ -27,9 +27,13 @@ challangeRoute.post("/create", auth, (req: Request, res: Response) => {
   createChallenge(req, res);
 });
 
-challangeRoute.get("/:challengeId", auth, (req: Request, res: Response) => {
-  getQuestions(req, res);
-});
+challangeRoute.get(
+  "/:challengeId/questions",
+  auth,
+  (req: Request, res: Response) => {
+    getQuestions(req, res);
+  }
+);
 
 challangeRoute.get(
   "/:challengeId/:index",

@@ -1,11 +1,19 @@
 import Topic from "../models/Topic.model";
 
-const getTopicsService = async () => {
-  const topics = await Topic.find();
+//MyModel.find(query, fields, { skip: 10, limit: 5 }, function(err, results) { ... });
+
+const getTopicsService = async (page: number, pageSize: number) => {
+  console.log(page, pageSize);
+  const total = await Topic.countDocuments();
+  const topics = await Topic.find({}, null, {
+    skip: (page - 1) * pageSize,
+    limit: pageSize,
+  });
   return {
     status: 200,
     message: {
       topics,
+      total,
     },
   };
 };
