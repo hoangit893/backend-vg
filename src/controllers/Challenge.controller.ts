@@ -63,12 +63,13 @@ const getChallengeByTopic = async (req: Request, res: Response) => {
     res.status(401).send("Unauthorized");
     return;
   }
-  const topicID = req.params.topicID;
-  if (!topicID || topicID.length !== 24) {
+  const topicId = req.params.topicId;
+  console.log(topicId);
+  if (!topicId || topicId.length !== 24) {
     res.status(400).json({ message: "Invalid Topic ID" });
     return;
   }
-  const response = await getChallengeByTopicService(topicID);
+  const response = await getChallengeByTopicService(topicId);
   if (response) {
     res.status(200).json(response);
   } else {

@@ -26,8 +26,10 @@ const createTopic = async (req: Request, res: Response) => {
 };
 
 const getTopics = async (req: Request, res: Response) => {
+  const { page, pageSize } = req.query;
+
   try {
-    const topics = await getTopicsService();
+    const topics = await getTopicsService(Number(page), Number(pageSize));
     res.status(topics.status).json(topics.message);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });

@@ -77,6 +77,8 @@ const getQuestion = async (req: Request, res: Response) => {
     res.status(400).json({ message: "Index out of range" });
     return;
   }
-  res.status(200).json({ data: questionList[index] });
+  res.status(200).json({
+    data: questionList[index],
+  });
 };
 export { createQuestion, getQuestions, getQuestion };
