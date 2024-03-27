@@ -1,10 +1,10 @@
 import { Request, Response } from "express";
-import { createTopic, getTopics } from "../controllers/Topic.controller";
+import { createTopic, getTopics } from "../../controllers/Topic.controller";
 import exp from "constants";
 const topicRoute = require("express").Router();
-import { auth } from "../middlewares/auth";
-import { getChallengeByTopic } from "../controllers/Challenge.controller";
-import { getChallengeByTopicService } from "../services/Challenge.services";
+import { auth } from "../../middlewares/auth";
+import { getChallengeByTopic } from "../../controllers/Challenge.controller";
+import { getChallengeByTopicService } from "../../services/Challenge.services";
 
 // topicRoute.get("/", auth, (req: Request, res: Response) => {
 //   getTopics(req, res);

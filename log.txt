@@ -908,3 +908,13 @@ Request URL: /user/update | Request Type: PUT | Request IP: ::ffff:127.0.0.1 | R
 Response Status: [200]  Response Time: [3/28/2024, 5:05:57 AM]  
 Request URL: /user/update | Request Type: PUT | Request IP: ::ffff:127.0.0.1 | Request Time: 3/28/2024, 5:05:58 AM  
 Response Status: [200]  Response Time: [3/28/2024, 5:05:58 AM]  
+Server is running on port 3000  
+Request URL: /api/v1/user/update | Request Type: PUT | Request IP: ::ffff:127.0.0.1 | Request Time: 3/28/2024, 5:25:46 AM  
+Response Status: [200]  Response Time: [3/28/2024, 5:25:46 AM]  
+Request URL: /api/v1/user/update | Request Type: PUT | Request IP: ::ffff:127.0.0.1 | Request Time: 3/28/2024, 5:25:47 AM  
+Response Status: [200]  Response Time: [3/28/2024, 5:25:47 AM]  
+Server is running on port 3000  
+Request URL: /api/v1/user/update | Request Type: PUT | Request IP: ::ffff:127.0.0.1 | Request Time: 3/28/2024, 5:25:57 AM  
+Response Status: [200]  Response Time: [3/28/2024, 5:25:57 AM]  
+Request URL: /api/v1/user/update | Request Type: PUT | Request IP: ::ffff:127.0.0.1 | Request Time: 3/28/2024, 5:25:58 AM  
+Response Status: [200]  Response Time: [3/28/2024, 5:25:58 AM]  

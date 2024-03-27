@@ -2,7 +2,7 @@ import express, { Request, Response } from "express";
 import {
   createQuestion,
   getQuestions,
-} from "../controllers/Question.controller";
+} from "../../controllers/Question.controller";
 
 const questionRoute = express.Router();
 

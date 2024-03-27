@@ -4,7 +4,7 @@ const answerRoute = express.Router();
 import {
   createAnswerService,
   getAnswerService,
-} from "../services/Answer.services";
+} from "../../services/Answer.services";
 
 answerRoute.post("/create", (req: Request, res: Response) =>
   createAnswerService(req, res)
