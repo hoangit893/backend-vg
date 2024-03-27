@@ -1,51 +1,52 @@
-import { Request, Response } from "express";
 import argon2 from "argon2";
 const jwt = require("jsonwebtoken");
 import User from "../models/User.model";
 import { config } from "../configs/config";
-import { sender } from "../helpers/utils";
+import { hideSensitiveData, sender } from "../helpers/utils";
+import { userUpdateValidation } from "../helpers/validation_schema";
+import { ObjectId } from "mongoose";
 
-const validateInput = (req: Request) => {
-  const error: any = {};
+// const validateInput = (req: Request) => {
+//   const error: any = {};
 
-  let username = req.body.username?.trim();
-  if (!username) {
-    error["username"] = "Username is required";
-  } else if (username.length < 6) {
-    error["username"] = "Username must be at least 6 characters";
-  } else if (username.split(" ").length > 1) {
-    error["username"] = "Username must not contain spaces";
-  }
+//   let username = req.body.username?.trim();
+//   if (!username) {
+//     error["username"] = "Username is required";
+//   } else if (username.length < 6) {
+//     error["username"] = "Username must be at least 6 characters";
+//   } else if (username.split(" ").length > 1) {
+//     error["username"] = "Username must not contain spaces";
+//   }
 
-  let name = req.body.name?.trim();
-  if (!name) {
-    error["name"] = "Name is required";
-  } else if (name.length < 6) {
-  }
+//   let name = req.body.name?.trim();
+//   if (!name) {
+//     error["name"] = "Name is required";
+//   } else if (name.length < 6) {
+//   }
 
-  let email = req.body.email?.trim();
-  if (!email) {
-    error["email"] = "Email is required";
-  }
+//   let email = req.body.email?.trim();
+//   if (!email) {
+//     error["email"] = "Email is required";
+//   }
 
-  let password = req.body.password?.trim();
-  if (!password) {
-    error["password"] = "Password is required";
-  } else if (password.length < 8) {
-    error["password"] = "Password must be at least 8 characters";
-  } else if (password.split(" ").length > 1) {
-    error["password"] = "Password must not contain spaces";
-  } else if (
-    password.search(/[a-z]/) < 0 ||
-    password.search(/[A-Z]/) < 0 ||
-    password.search(/[0-9]/) < 0 ||
-    password.search(/[!@#$%^&*]/) < 0
-  ) {
-    error["password"] =
-      "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character";
-  }
-  return error;
-};
+//   let password = req.body.password?.trim();
+//   if (!password) {
+//     error["password"] = "Password is required";
+//   } else if (password.length < 8) {
+//     error["password"] = "Password must be at least 8 characters";
+//   } else if (password.split(" ").length > 1) {
+//     error["password"] = "Password must not contain spaces";
+//   } else if (
+//     password.search(/[a-z]/) < 0 ||
+//     password.search(/[A-Z]/) < 0 ||
+//     password.search(/[0-9]/) < 0 ||
+//     password.search(/[!@#$%^&*]/) < 0
+//   ) {
+//     error["password"] =
+//       "Password must contain at least one lowercase letter, one uppercase letter, one number, and one special character";
+//   }
+//   return error;
+// };
 
 const findByUsername = async (username: string) => {
   return User.findOne({ username: username });
@@ -195,6 +196,42 @@ const resetPasswordService = async ({
   }
 };
 
+const updateUserService = async (
+  id: string,
+  updateData: {
+    name?: string;
+    email?: string;
+    password?: string;
+    avatarImg?: string;
+    bio?: string;
+  }
+) => {
+  const { error } = userUpdateValidation.validate(updateData);
+  if (error) {
+    return {
+      status: 400,
+      message: error.details[0].message,
+    };
+  }
+
+  const user = await User.findByIdAndUpdate({ _id: id }, updateData, {
+    new: true,
+  });
+
+  if (!user) {
+    return {
+      status: 400,
+      message: "User not found",
+    };
+  } else {
+    return {
+      status: 200,
+      message: "User updated successfully",
+      data: hideSensitiveData(user),
+    };
+  }
+};
+
 export {
   createUserService,
   findByUsername,
@@ -202,4 +239,5 @@ export {
   loginUserService,
   forgotPasswordService,
   resetPasswordService,
+  updateUserService,
 };

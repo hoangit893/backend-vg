@@ -6,11 +6,13 @@ import {
   isExistUser,
   loginUserService,
   resetPasswordService,
+  updateUserService,
   // forgotPasswordService,
   // resetPasswordService,
 } from "../services/User.services";
 
 import { registerValidation } from "../helpers/validation_schema";
+import User from "../models/User.model";
 
 const createUser = async (req: Request, res: Response) => {
   const newUser: {
@@ -57,4 +59,29 @@ const resetPassword = async (req: Request, res: Response) => {
   res.status(response.status).json(response.message);
 };
 
-export { createUser, loginUser, forgotPassword, resetPassword };
+const updateUser = async (req: Request, res: Response) => {
+  if (!req.headers.username) {
+    res.status(401).json({ message: "Unauthorized" });
+    return;
+  }
+  const username = req.headers.username.toString();
+
+  const user = await User.findOne({ username: username });
+
+  if (!user) {
+    res.status(500).json({ message: "Internal Error" });
+    return;
+  }
+
+  const id = user?._id.toString();
+
+  const { name, email, password, avatarImg, bio } = req.body;
+  const updateData = { name, email, password, avatarImg, bio };
+
+  const response = await updateUserService(id, updateData);
+  res
+    .status(response.status)
+    .json({ message: response.message, data: response.data });
+};
+
+export { createUser, loginUser, updateUser, forgotPassword, resetPassword };

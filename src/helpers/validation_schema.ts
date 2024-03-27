@@ -11,4 +11,14 @@ const registerValidation = Joi.object({
   name: Joi.string().min(3).max(30).required(),
 });
 
-export { registerValidation };
+const userUpdateValidation = Joi.object({
+  email: Joi.string().email({
+    minDomainSegments: 2,
+  }),
+  name: Joi.string().min(3).max(30),
+  bio: Joi.string().min(3).max(100),
+  avatarImg: Joi.string().uri(),
+  password: Joi.string().min(8).max(30),
+});
+
+export { registerValidation, userUpdateValidation };
