@@ -4,7 +4,9 @@ import {
   loginUser,
   forgotPassword,
   resetPassword,
+  updateUser,
 } from "../controllers/User.controller";
+import { auth } from "../middlewares/auth";
 const userRoute = express.Router();
 
 userRoute.get("/", (req: Request, res: Response) => {
@@ -20,6 +22,10 @@ userRoute.post("/create", (req: Request, res: Response) =>
 );
 
 userRoute.post("/login", (req: Request, res: Response) => loginUser(req, res));
+
+userRoute.put("/update", auth, (req: Request, res: Response) => {
+  updateUser(req, res);
+});
 
 userRoute.post("/forgotpassword", (req: Request, res: Response) =>
   forgotPassword(req, res)
