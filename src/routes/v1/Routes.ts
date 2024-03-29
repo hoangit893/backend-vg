@@ -1,5 +1,5 @@
 import answerRoute from "./answerRoute";
-import challangeRoute from "./challangeRoute";
+import challengeRoute from "./challengeRoute";
 import questionRoute from "./questionRoute";
 import userRoute from "./userRoute";
 import topicRoute from "./topicRoute";
@@ -9,7 +9,7 @@ const apiV1 = express.Router();
 
 apiV1.use("/user", userRoute);
 apiV1.use("/topic", topicRoute);
-apiV1.use("/challange", challangeRoute);
+apiV1.use("/challenge", challengeRoute);
 apiV1.use("/question", questionRoute);
 apiV1.use("/answer", answerRoute);
 

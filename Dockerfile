@@ -1,11 +1,20 @@
-FROM node:lts-alpine
-ENV NODE_ENV=production
-WORKDIR /app
+# Use the official Node.js 14 image as the base image
+FROM node:14
 
-COPY ["package.json", "package-lock.json*", "npm-shrinkwrap.json*", "./"]
-RUN npm install --production --silent && mv node_modules ../
-COPY . .
+# Set the working directory inside the container
+WORKDIR /src
+
+# Copy package.json and package-lock.json to the working directory
+COPY package*.json ./
+
+# Install the dependencies
+RUN npm install
+
+# Copy the rest of the application code to the working directory
+COPY . ./src
+
+# Expose the port on which your Express.js application will run
 EXPOSE 3000
-RUN chown -R node /app
-USER node
+
+# Start the application
 CMD ["npm", "start"]

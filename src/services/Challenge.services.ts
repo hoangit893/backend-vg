@@ -1,14 +1,26 @@
 import Challenge from "../models/Challenge.model";
 import Topic from "../models/Topic.model";
 
-const getChallengeService = async () => {
-  const challenges = await Challenge.find();
-  return {
-    status: 200,
-    message: {
-      challenges,
-    },
-  };
+const getChallengeService = async (challengeId: string) => {
+  const challenge = await Challenge.findOne({
+    _id: challengeId,
+  }).populate("topicId");
+
+  if (!challenge) {
+    return {
+      status: 404,
+      message: {
+        error: "Challenge not found",
+      },
+    };
+  } else {
+    return {
+      status: 200,
+      message: {
+        challenge,
+      },
+    };
+  }
 };
 
 const createChallengeService = async ({
@@ -90,7 +102,6 @@ const getChallengeByTopicService = async (topicID: string) => {
   );
   return {
     status: 200,
-
     challenges,
   };
 };

@@ -3,7 +3,7 @@ import express, { Request, Response } from "express";
 const answerRoute = express.Router();
 import {
   createAnswerService,
-  getAnswerService,
+  checkAnswerService,
 } from "../../services/Answer.services";
 
 answerRoute.post("/create", (req: Request, res: Response) =>
@@ -11,7 +11,7 @@ answerRoute.post("/create", (req: Request, res: Response) =>
 );
 
 answerRoute.get("/:questionId", (req: Request, res: Response) => {
-  getAnswerService(req, res);
+  checkAnswerService(req, res);
 });
 
 export default answerRoute;

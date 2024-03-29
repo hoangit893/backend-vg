@@ -26,7 +26,12 @@ const createTopic = async (req: Request, res: Response) => {
 };
 
 const getTopics = async (req: Request, res: Response) => {
-  const { page, pageSize } = req.query;
+  let page = Number(req.query.page);
+  let pageSize = Number(req.query.pageSize);
+  if (!page || !pageSize) {
+    page = 1;
+    pageSize = 10;
+  }
 
   try {
     const topics = await getTopicsService(Number(page), Number(pageSize));

@@ -8,9 +8,9 @@ import {
   getQuestions,
   getQuestion,
 } from "../../controllers/Question.controller";
-const challangeRoute = express.Router();
+const challengeRoute = express.Router();
 
-challangeRoute.get("/", auth, (req: Request, res: Response) => {
+challengeRoute.get("/", auth, (req: Request, res: Response) => {
   if (req.headers.role !== "admin" && req.headers.role !== "user") {
     res.status(401).send("Unauthorized");
     return;
@@ -18,7 +18,7 @@ challangeRoute.get("/", auth, (req: Request, res: Response) => {
   getChallenge(req, res);
 });
 
-challangeRoute.post("/create", auth, (req: Request, res: Response) => {
+challengeRoute.post("/create", auth, (req: Request, res: Response) => {
   if (!req.headers.role) {
     res.status(401).send("Unauthorized");
     return;
@@ -30,7 +30,7 @@ challangeRoute.post("/create", auth, (req: Request, res: Response) => {
   createChallenge(req, res);
 });
 
-challangeRoute.get(
+challengeRoute.get(
   "/:challengeId/questions",
   auth,
   (req: Request, res: Response) => {
@@ -38,7 +38,15 @@ challangeRoute.get(
   }
 );
 
-challangeRoute.get(
+challengeRoute.get(
+  "/:challengeId/detail",
+  auth,
+  (req: Request, res: Response) => {
+    getChallenge(req, res);
+  }
+);
+
+challengeRoute.get(
   "/:challengeId/:index",
   auth,
   (req: Request, res: Response) => {
@@ -46,4 +54,4 @@ challangeRoute.get(
   }
 );
 
-export default challangeRoute;
+export default challengeRoute;

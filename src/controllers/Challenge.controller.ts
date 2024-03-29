@@ -6,8 +6,10 @@ import {
 } from "../services/Challenge.services";
 
 const getChallenge = async (req: Request, res: Response) => {
+  const challengeId = req.params.challengeId;
+
   try {
-    const response = await getChallengeService();
+    const response = await getChallengeService(challengeId);
     res.status(response.status).json(response.message);
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
@@ -64,7 +66,6 @@ const getChallengeByTopic = async (req: Request, res: Response) => {
     return;
   }
   const topicId = req.params.topicId;
-  console.log(topicId);
   if (!topicId || topicId.length !== 24) {
     res.status(400).json({ message: "Invalid Topic ID" });
     return;

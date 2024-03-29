@@ -57,6 +57,12 @@ const getQuestions = async (req: Request, res: Response) => {
 
   let questions = await Question.find({ challengeId: challengeId });
 
+  questions.forEach((question) => {
+    question.answerList.forEach((answer) => {
+      answer.isCorrect = undefined;
+    });
+  });
+
   if (questions.length == 0) {
     res.status(400).json({ message: "Questions not found" });
     return;

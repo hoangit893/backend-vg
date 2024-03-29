@@ -13,6 +13,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       req.headers.role = decoded.role;
       next();
     } else {
+      console.log("Unauthorized - 1");
       res.status(401).send("Unauthorized");
     }
   } catch (error) {
