@@ -3,13 +3,16 @@ import {
   createTopicService,
   getTopicsService,
 } from "../services/Topic.services";
+import Topic from "../models/Topic.model";
+import Challenge from "../models/Challenge.model";
 
 const createTopic = async (req: Request, res: Response) => {
   if (req.headers.role !== "admin") {
     res.status(401).json({ message: "Forbidden" });
     return;
   }
-  const topic: { topicName: string; description?: string } = req.body;
+  const topic: { topicName: string; description?: string; imageUrl?: string } =
+    req.body;
   try {
     // Your logic here
     if (!topic.topicName) {
@@ -41,4 +44,54 @@ const getTopics = async (req: Request, res: Response) => {
   }
 };
 
-export { createTopic, getTopics };
+const updateTopic = async (req: Request, res: Response) => {
+  if (req.headers.role !== "admin") {
+    res.status(401).json({ message: "Forbidden" });
+    return;
+  }
+  const topicId = req.params.topicId;
+  console.log(topicId);
+  const updateTopic: { topicName: string; description?: string } = req.body;
+
+  const topic = await Topic.findOne({ _id: topicId });
+  if (!topic) {
+    res.status(404).json({ message: "Topic not found" });
+    return;
+  }
+
+  const isDuplicateName = await Topic.findOne({
+    topicName: updateTopic.topicName,
+  });
+
+  if (
+    isDuplicateName &&
+    isDuplicateName._id.toString() !== topicId.toString()
+  ) {
+    res.status(400).json({ message: "Topic name already exists" });
+    return;
+  }
+
+  try {
+    await Topic.updateOne({ _id: topicId }, updateTopic);
+    res.status(200).json({ message: "Topic updated" });
+  } catch (error) {
+    res.status(500).json({ error: error });
+  }
+};
+
+const deleteTopic = async (req: Request, res: Response) => {
+  if (req.headers.role !== "admin") {
+    res.status(401).json({ message: "Forbidden" });
+    return;
+  }
+  const topicId = req.params.topicId;
+  const topic = await Topic.deleteOne({ _id: topicId });
+  if (topic.deletedCount === 0) {
+    res.status(404).json({ message: "Topic not found" });
+  } else {
+    Challenge.deleteMany({ topicId: topicId });
+    res.status(200).json({ message: "Topic deleted" });
+  }
+};
+
+export { createTopic, getTopics, updateTopic, deleteTopic };

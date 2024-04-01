@@ -3,11 +3,11 @@ import { auth } from "../../middlewares/auth";
 import {
   createChallenge,
   getChallenge,
+  getChallengeList,
+  updateChallenge,
+  deleteChallenge,
 } from "../../controllers/Challenge.controller";
-import {
-  getQuestions,
-  getQuestion,
-} from "../../controllers/Question.controller";
+
 const challengeRoute = express.Router();
 
 challengeRoute.get("/", auth, (req: Request, res: Response) => {
@@ -15,7 +15,7 @@ challengeRoute.get("/", auth, (req: Request, res: Response) => {
     res.status(401).send("Unauthorized");
     return;
   }
-  getChallenge(req, res);
+  getChallengeList(req, res);
 });
 
 challengeRoute.post("/create", auth, (req: Request, res: Response) => {
@@ -31,14 +31,6 @@ challengeRoute.post("/create", auth, (req: Request, res: Response) => {
 });
 
 challengeRoute.get(
-  "/:challengeId/questions",
-  auth,
-  (req: Request, res: Response) => {
-    getQuestions(req, res);
-  }
-);
-
-challengeRoute.get(
   "/:challengeId/detail",
   auth,
   (req: Request, res: Response) => {
@@ -46,11 +38,27 @@ challengeRoute.get(
   }
 );
 
-challengeRoute.get(
-  "/:challengeId/:index",
+challengeRoute.put(
+  "/update/:challengeId",
   auth,
   (req: Request, res: Response) => {
-    getQuestion(req, res);
+    if (req.headers.role !== "admin") {
+      res.status(401).send("Forbidden");
+      return;
+    }
+    updateChallenge(req, res);
+  }
+);
+
+challengeRoute.delete(
+  "/delete/:challengeId",
+  auth,
+  (req: Request, res: Response) => {
+    if (req.headers.role !== "admin") {
+      res.status(401).send("Forbidden");
+      return;
+    }
+    deleteChallenge(req, res);
   }
 );
 

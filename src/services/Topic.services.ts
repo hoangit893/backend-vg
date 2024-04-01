@@ -22,9 +22,11 @@ const getTopicsService = async (page: number, pageSize: number) => {
 const createTopicService = async ({
   topicName,
   description,
+  imageUrl,
 }: {
   topicName: string;
   description?: string;
+  imageUrl?: string;
 }) => {
   const isExistTopic = await Topic.findOne({ topicName: topicName });
   if (isExistTopic) {
@@ -39,6 +41,7 @@ const createTopicService = async ({
   const newTopic = new Topic({
     topicName: topicName,
     description: description,
+    imageUrl: imageUrl,
   });
 
   await newTopic.save();

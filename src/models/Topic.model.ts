@@ -9,6 +9,9 @@ const topicSchema = new Schema({
   description: {
     type: String,
   },
+  imageUrl: {
+    type: String,
+  },
 });
 
 const Topic = mongoose.model("Topic", topicSchema);

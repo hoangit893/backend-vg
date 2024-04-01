@@ -17,7 +17,7 @@ const challengeSchema = new Schema({
   point: {
     type: Number,
   },
-  image: {
+  imageUrl: {
     type: String,
   },
   topicId: {

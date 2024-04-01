@@ -23,19 +23,44 @@ const getChallengeService = async (challengeId: string) => {
   }
 };
 
+const getChallengeListService = async (queries: any) => {
+  let page = queries.page ? Number(queries.page) : 1;
+  let pageSize = queries.pageSize ? Number(queries.pageSize) : 10;
+  const query = { ...queries, page: undefined, pageSize: undefined };
+  const total = await Challenge.countDocuments({ ...query });
+  const challengeList = await Challenge.find(
+    {
+      ...query,
+    },
+    null,
+    {
+      skip: (page - 1) * pageSize,
+      limit: pageSize,
+    }
+  ).populate("topicId");
+
+  return {
+    status: 200,
+    message: {
+      challengeList,
+      total: total,
+    },
+  };
+};
+
 const createChallengeService = async ({
   challengeName,
   level,
-  topicName,
+  topicId,
   point,
-  img,
+  imageUrl,
   description,
 }: {
   challengeName: string;
   level: string;
-  topicName: string;
+  topicId: string;
   point: number;
-  img?: string;
+  imageUrl?: string;
   description?: string;
 }) => {
   const isExistChallenge = await Challenge.findOne({
@@ -51,7 +76,9 @@ const createChallengeService = async ({
     };
   }
 
-  let topic = await Topic.findOne({ topicName: topicName });
+  let topic = await Topic.findOne({
+    _id: topicId,
+  });
 
   if (!topic) {
     return {
@@ -66,7 +93,7 @@ const createChallengeService = async ({
       level,
       topicId: topic.id,
       point,
-      img,
+      imageUrl,
       description,
     });
 
@@ -87,27 +114,67 @@ const createChallengeService = async ({
   };
 };
 
-const getChallengeByTopicService = async (topicID: string) => {
-  const topic = await Topic.findOne({ _id: topicID });
-  if (!topic) {
+const updateChallengeService = async (
+  challengeId: string,
+  updateData: {
+    challengeName?: string;
+    level?: string;
+    topicName?: string;
+    point?: number;
+    imageUrl?: string;
+    description?: string;
+  }
+) => {
+  const challenge = await Challenge.findOne({ _id: challengeId });
+  if (!challenge) {
     return {
       status: 404,
-      message: {
-        error: "Topic not found",
-      },
+      message: "Challenge not found",
     };
   }
-  const challenges = await Challenge.find({ topicId: topicID }).populate(
-    "topicId"
-  );
-  return {
-    status: 200,
-    challenges,
-  };
+  const isDuplicateName = await Challenge.findOne({
+    challengeName: updateData.challengeName,
+  });
+
+  if (isDuplicateName && isDuplicateName._id.toString() !== challengeId) {
+    return {
+      status: 400,
+      message: "Challenge name already exists",
+    };
+  }
+
+  let result = await Challenge.updateOne({ _id: challengeId }, updateData);
+  if (result.matchedCount === 0) {
+    return {
+      status: 400,
+      message: "Error updating challenge",
+    };
+  } else {
+    return {
+      status: 200,
+      message: "Challenge updated",
+    };
+  }
 };
 
+const deleteChallengeService = async (challengeId: string) => {
+  const challenge = await Challenge.deleteOne({ _id: challengeId });
+  if (challenge.deletedCount === 0) {
+    return {
+      status: 404,
+      message: "Challenge not found",
+    };
+  } else {
+    return {
+      status: 200,
+      message: "Challenge deleted",
+    };
+  }
+};
 export {
   createChallengeService,
-  getChallengeByTopicService,
   getChallengeService,
+  getChallengeListService,
+  updateChallengeService,
+  deleteChallengeService,
 };

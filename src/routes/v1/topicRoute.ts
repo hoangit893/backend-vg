@@ -3,8 +3,7 @@ import { createTopic, getTopics } from "../../controllers/Topic.controller";
 import exp from "constants";
 const topicRoute = require("express").Router();
 import { auth } from "../../middlewares/auth";
-import { getChallengeByTopic } from "../../controllers/Challenge.controller";
-import { getChallengeByTopicService } from "../../services/Challenge.services";
+import { updateTopic, deleteTopic } from "../../controllers/Topic.controller";
 
 // topicRoute.get("/", auth, (req: Request, res: Response) => {
 //   getTopics(req, res);
@@ -27,11 +26,19 @@ topicRoute.get("/", auth, async (req: Request, res: Response) => {
   getTopics(req, res);
 });
 
-topicRoute.get(
-  "/:topicId/challenges",
+topicRoute.put(
+  "/update/:topicId",
   auth,
   async (req: Request, res: Response) => {
-    getChallengeByTopic(req, res);
+    updateTopic(req, res);
+  }
+);
+
+topicRoute.delete(
+  "/delete/:topicId",
+  auth,
+  async (req: Request, res: Response) => {
+    deleteTopic(req, res);
   }
 );
 export default topicRoute;
