@@ -158,19 +158,21 @@ const updateChallengeService = async (
 };
 
 const deleteChallengeService = async (challengeId: string) => {
-  const challenge = await Challenge.deleteOne({ _id: challengeId });
-  if (challenge.deletedCount === 0) {
-    return {
-      status: 404,
-      message: "Challenge not found",
-    };
-  } else {
+  try {
+    await Challenge.deleteById(challengeId);
     return {
       status: 200,
       message: "Challenge deleted",
     };
+  } catch (error) {
+    console.log(error);
+    return {
+      status: 400,
+      message: "Error deleting challenge",
+    };
   }
 };
+
 export {
   createChallengeService,
   getChallengeService,

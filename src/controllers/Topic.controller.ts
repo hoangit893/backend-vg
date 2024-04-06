@@ -85,12 +85,16 @@ const deleteTopic = async (req: Request, res: Response) => {
     return;
   }
   const topicId = req.params.topicId;
-  const topic = await Topic.deleteOne({ _id: topicId });
-  if (topic.deletedCount === 0) {
-    res.status(404).json({ message: "Topic not found" });
-  } else {
-    Challenge.deleteMany({ topicId: topicId });
+  try {
+    const topic = await Topic.findById(topicId);
+    if (!topic) {
+      res.status(404).json({ message: "Topic not found" });
+      return;
+    }
+    await Topic.deleteById(topicId);
     res.status(200).json({ message: "Topic deleted" });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
   }
 };
 
