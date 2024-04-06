@@ -3,6 +3,7 @@ import Challenge from "../models/Challenge.model";
 import { createQuestionService } from "../services/Question.services";
 import Question from "../models/Question.model";
 import { get } from "http";
+import { validateAnswerList } from "../helpers/validation_schema";
 
 const createQuestion = async (req: Request, res: Response) => {
   const { type, question, challengeId, answerList } = req.body;
@@ -18,7 +19,7 @@ const createQuestion = async (req: Request, res: Response) => {
     error.push("Challenge name is required");
   }
 
-  if (!answerList || type == "arrange") {
+  if (!answerList && type !== "arrange") {
     error.push("Answer list is required");
   }
 
@@ -60,14 +61,10 @@ const getQuestions = async (req: Request, res: Response) => {
   if (role !== "admin")
     questions.forEach((question) => {
       question.answerList.forEach((answer) => {
-        answer.isCorrect = undefined;
+        return { ...answer, isCorrect: undefined };
       });
     });
 
-  if (questions.length == 0) {
-    res.status(400).json({ message: "Questions not found" });
-    return;
-  }
   res.status(200).json({ questionList: questions });
 };
 
@@ -92,6 +89,11 @@ const getQuestion = async (req: Request, res: Response) => {
 const updateQuestion = async (req: Request, res: Response) => {
   let questionId = req.params.questionId;
   let updateQuestion = req.body;
+  const error: string[] = validateAnswerList(updateQuestion.answerList);
+  if (error.length > 0) {
+    res.status(400).json({ message: error });
+    return;
+  }
   let question = await Question.findOne({});
   if (!question) {
     res.status(404).json({ message: "Question not found" });
@@ -107,12 +109,12 @@ const updateQuestion = async (req: Request, res: Response) => {
 
 const deleteQuestion = async (req: Request, res: Response) => {
   let questionId = req.params.questionId;
-  let question = await Question.deleteOne({ _id: questionId });
-  if (question.deletedCount === 0) {
-    res.status(400).json({ message: "Question not found" });
-    return;
+  try {
+    await Question.deleteById(questionId);
+    res.status(200).json({ message: "Question deleted" });
+  } catch (err) {
+    res.status(500).json({ message: "Internal server error" });
   }
-  res.status(200).json({ message: "Question deleted" });
 };
 export {
   createQuestion,

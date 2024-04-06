@@ -1,6 +1,17 @@
-import mongoose from "mongoose";
-import { describe } from "node:test";
-const Schema = mongoose.Schema;
+import mongoose, { Schema } from "mongoose";
+import MongooseDelete, {
+  SoftDeleteModel,
+  SoftDeleteDocument,
+} from "mongoose-delete";
+
+interface Challenge extends SoftDeleteDocument {
+  challengeName: string;
+  level: string;
+  description: string;
+  point: number;
+  imageUrl: string;
+  topicId: string;
+}
 
 const challengeSchema = new Schema({
   challengeName: {
@@ -26,6 +37,14 @@ const challengeSchema = new Schema({
   },
 });
 
-const Challenge = mongoose.model("Challenge", challengeSchema);
+challengeSchema.plugin(MongooseDelete, {
+  deletedAt: true,
+  overrideMethods: "all",
+});
+
+const Challenge = mongoose.model<
+  SoftDeleteDocument,
+  SoftDeleteModel<Challenge>
+>("Challenge", challengeSchema);
 
 export default Challenge;
