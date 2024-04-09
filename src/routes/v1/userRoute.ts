@@ -35,7 +35,7 @@ userRoute.post("/resetpassword", (req: Request, res: Response) => {
   resetPassword(req, res);
 });
 
-userRoute.post("/auth", auth, (req: Request, res: Response) => {
+userRoute.get("/auth", auth, (req: Request, res: Response) => {
   res.status(200).json({
     message: "Authorized",
     username: req.body.username,

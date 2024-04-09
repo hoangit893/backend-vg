@@ -1,4 +1,5 @@
 import Challenge from "../models/Challenge.model";
+import Question from "../models/Question.model";
 import Topic from "../models/Topic.model";
 
 const getChallengeService = async (challengeId: string) => {
@@ -28,7 +29,7 @@ const getChallengeListService = async (queries: any) => {
   let pageSize = queries.pageSize ? Number(queries.pageSize) : 10;
   const query = { ...queries, page: undefined, pageSize: undefined };
   const total = await Challenge.countDocuments({ ...query });
-  const challengeList = await Challenge.find(
+  let challengeList = await Challenge.find(
     {
       ...query,
     },
@@ -38,6 +39,12 @@ const getChallengeListService = async (queries: any) => {
       limit: pageSize,
     }
   ).populate("topicId");
+
+  challengeList.filter((challenge) => {
+    return challenge.topicId == null ? false : true;
+  });
+
+  console.log(challengeList);
 
   return {
     status: 200,
@@ -63,11 +70,13 @@ const createChallengeService = async ({
   imageUrl?: string;
   description?: string;
 }) => {
-  const isExistChallenge = await Challenge.findOne({
+  const isExistChallenge = await Challenge.find({
     challengeName: challengeName,
   });
 
-  if (isExistChallenge) {
+  console.log(isExistChallenge);
+
+  if (isExistChallenge.length > 0) {
     return {
       status: 400,
       message: {
@@ -160,6 +169,7 @@ const updateChallengeService = async (
 const deleteChallengeService = async (challengeId: string) => {
   try {
     await Challenge.deleteById(challengeId);
+    await Question.delete({ challengeId: challengeId });
     return {
       status: 200,
       message: "Challenge deleted",

@@ -92,6 +92,7 @@ const deleteTopic = async (req: Request, res: Response) => {
       return;
     }
     await Topic.deleteById(topicId);
+    await Challenge.delete({ topicId: topicId });
     res.status(200).json({ message: "Topic deleted" });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
