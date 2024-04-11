@@ -27,7 +27,14 @@ const getChallengeService = async (challengeId: string) => {
 const getChallengeListService = async (queries: any) => {
   let page = queries.page ? Number(queries.page) : 1;
   let pageSize = queries.pageSize ? Number(queries.pageSize) : 10;
-  const query = { ...queries, page: undefined, pageSize: undefined };
+  const query: any = {};
+  query.topicId = queries.topicId ? queries.topicId : { $ne: null };
+  query.level = queries.level ? queries.level : { $ne: null };
+  query.challengeName = queries.challengeName
+    ? { $regex: queries.challengeName, $options: "i" }
+    : { $ne: null };
+
+  console.log(query);
   const total = await Challenge.countDocuments({ ...query });
   let challengeList = await Challenge.find(
     {
@@ -43,8 +50,6 @@ const getChallengeListService = async (queries: any) => {
   challengeList.filter((challenge) => {
     return challenge.topicId == null ? false : true;
   });
-
-  console.log(challengeList);
 
   return {
     status: 200,

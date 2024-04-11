@@ -4,7 +4,6 @@ import User from "../models/User.model";
 import { config } from "../configs/config";
 import { hideSensitiveData, sender } from "../helpers/utils";
 import { userUpdateValidation } from "../helpers/validation_schema";
-import { ObjectId } from "mongoose";
 
 // const validateInput = (req: Request) => {
 //   const error: any = {};
@@ -49,7 +48,14 @@ import { ObjectId } from "mongoose";
 // };
 
 const findByUsername = async (username: string) => {
-  return User.findOne({ username: username });
+  const user = await User.findOne({ username: username });
+  if (!user) {
+    return {
+      status: 400,
+      message: "User not found",
+    };
+  }
+  return hideSensitiveData(user);
 };
 
 const isExistUser = async (username: String, email?: String) => {
@@ -109,6 +115,8 @@ const loginUserService = async ({
         status: 200,
         message: {
           username: user.username,
+          role: user.role,
+          user: hideSensitiveData(user),
           token: token,
         },
       };

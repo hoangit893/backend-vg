@@ -10,9 +10,9 @@ export default function hideSensitiveData(data: {
   if (data.__v) {
     data.__v = undefined;
   }
-  if (data.role) {
-    data.role = undefined;
-  }
+  // if (data.role) {
+  //   data.role = undefined;
+  // }
 
   if (data._id) {
     data._id = undefined;

@@ -2,13 +2,14 @@ import Topic from "../models/Topic.model";
 
 //MyModel.find(query, fields, { skip: 10, limit: 5 }, function(err, results) { ... });
 
-const getTopicsService = async (page: number, pageSize: number) => {
-  console.log(page, pageSize);
-  const total = await Topic.countDocuments();
-  const topics = await Topic.find({}, null, {
-    skip: (page - 1) * pageSize,
-    limit: pageSize,
-  });
+const getTopicsService = async (
+  queries: object,
+  skip: number,
+  limit: number
+) => {
+  const total = await Topic.countDocuments(queries);
+  const topics = await Topic.find(queries, {}, { skip: skip, limit: limit });
+  console.log(topics);
   return {
     status: 200,
     message: {

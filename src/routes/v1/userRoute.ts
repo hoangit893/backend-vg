@@ -7,6 +7,7 @@ import {
   updateUser,
 } from "../../controllers/User.controller";
 import { auth } from "../../middlewares/auth";
+import { findByUsername } from "../../services/User.services";
 const userRoute = express.Router();
 
 userRoute.get("/", (req: Request, res: Response) => {
@@ -35,10 +36,14 @@ userRoute.post("/resetpassword", (req: Request, res: Response) => {
   resetPassword(req, res);
 });
 
-userRoute.get("/auth", auth, (req: Request, res: Response) => {
+userRoute.get("/auth", auth, async (req: Request, res: Response) => {
   res.status(200).json({
     message: "Authorized",
     username: req.body.username,
+    role: req.headers.role,
+    user: await findByUsername(
+      req.headers.username ? req.headers.username.toString() : ""
+    ),
   });
 });
 export default userRoute;
