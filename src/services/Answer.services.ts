@@ -58,7 +58,7 @@ const checkAnswerService = async (req: Request, res: Response) => {
   const pointFromQuestion = challenge.point / numberOfQuestion;
 
   for (let i = 0; i < answerList.length; i++) {
-    if (await checkAnswer(answerList[i], userAnswer)) {
+    if (await checkAnswer(answerList[i].questionId, answerList[i].answers)) {
       correctAnswer++;
       point += pointFromQuestion;
     }
