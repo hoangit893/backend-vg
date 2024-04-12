@@ -16,7 +16,7 @@ const createQuestion = async (req: Request, res: Response) => {
     error.push("Question is required");
   }
   if (!challengeId) {
-    error.push("Challenge name is required");
+    error.push("ChallengeId is required");
   }
 
   if (!answerList && type !== "arrange") {

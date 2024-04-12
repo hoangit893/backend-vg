@@ -82,6 +82,7 @@ const createUserService = async ({
     username,
     email,
     password: await argon2.hash(password),
+    challengeList: [],
   });
 
   await user.save();

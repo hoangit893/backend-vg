@@ -1,4 +1,4 @@
-import mongoose, { Schema } from "mongoose";
+import mongoose, { ObjectId, Schema } from "mongoose";
 import MongooseDelete, {
   SoftDeleteModel,
   SoftDeleteDocument,
@@ -11,6 +11,7 @@ interface Challenge extends SoftDeleteDocument {
   point: number;
   imageUrl: string;
   topicId: string;
+  userList: [any];
 }
 
 const challengeSchema = new Schema({
@@ -35,6 +36,17 @@ const challengeSchema = new Schema({
     type: Schema.Types.ObjectId,
     ref: "Topic",
   },
+  userList: [
+    {
+      userId: {
+        type: Schema.Types.ObjectId,
+        ref: "User",
+      },
+      point: {
+        type: Number,
+      },
+    },
+  ],
 });
 
 challengeSchema.plugin(MongooseDelete, {

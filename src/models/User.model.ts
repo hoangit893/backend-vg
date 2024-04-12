@@ -1,3 +1,4 @@
+import { number } from "joi";
 import mongoose from "mongoose";
 import MongooseDelete from "mongoose-delete";
 
@@ -43,6 +44,37 @@ const userSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
+  challengeList: [
+    {
+      challengeId: {
+        type: mongoose.Schema.Types.ObjectId,
+        ref: "Challenge",
+      },
+      challengePoint: {
+        type: Number,
+      },
+      point: {
+        type: Number,
+        default: 0,
+      },
+      isDone: {
+        type: Boolean,
+        default: false,
+      },
+      questionList: [
+        {
+          question: {
+            type: mongoose.Schema.Types.ObjectId,
+            ref: "Question",
+          },
+          isCorrect: {
+            type: Boolean,
+            default: false,
+          },
+        },
+      ],
+    },
+  ],
 });
 
 userSchema.plugin(MongooseDelete, {

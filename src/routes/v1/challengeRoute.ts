@@ -7,6 +7,7 @@ import {
   updateChallenge,
   deleteChallenge,
 } from "../../controllers/Challenge.controller";
+import { checkAnswerService } from "../../services/Answer.services";
 
 const challengeRoute = express.Router();
 
@@ -62,4 +63,7 @@ challengeRoute.delete(
   }
 );
 
+challengeRoute.post("check-answers", auth, (req: Request, res: Response) => {
+  checkAnswerService(req, res);
+});
 export default challengeRoute;

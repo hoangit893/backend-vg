@@ -188,6 +188,21 @@ const deleteChallengeService = async (challengeId: string) => {
   }
 };
 
+// const addUserToChallengeService = async (userId: any, challengeId: any) => {
+//   const challenge = await Challenge.findOne({
+//     _id: challengeId,
+//   });
+
+//   if (!challenge) {
+//     return {
+//       status: 400,
+//       message: "Challenge not found",
+//     };
+//   }
+
+//   challenge.userList = [...challenge.userList, userId];
+// };
+
 export {
   createChallengeService,
   getChallengeService,

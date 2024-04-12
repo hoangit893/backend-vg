@@ -45,8 +45,6 @@ const createQuestionService = async (
   //   }
   // }
 
-  console.log(answerList);
-
   if (answerList.length === 0) {
     return {
       status: 400,
