@@ -63,7 +63,7 @@ challengeRoute.delete(
   }
 );
 
-challengeRoute.post("check-answers", auth, (req: Request, res: Response) => {
+challengeRoute.post("/check-answers", auth, (req: Request, res: Response) => {
   checkAnswerService(req, res);
 });
 export default challengeRoute;

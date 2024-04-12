@@ -6,7 +6,6 @@ import Challenge from "../models/Challenge.model";
 const checkAnswerService = async (req: Request, res: Response) => {
   const challengeId = req.body.challengeId;
   const answerList = req.body.answerList;
-  const questionId = req.params.questionId;
   const userAnswer = req.body.userAnswer;
   const username = req.headers.username?.toString();
   let correctAnswer = 0;
@@ -57,11 +56,6 @@ const checkAnswerService = async (req: Request, res: Response) => {
 
   let point = 0;
   const pointFromQuestion = challenge.point / numberOfQuestion;
-
-  if (!questionId) {
-    res.status(400).send("Missing fields");
-    return;
-  }
 
   for (let i = 0; i < answerList.length; i++) {
     if (await checkAnswer(answerList[i], userAnswer)) {
@@ -143,7 +137,6 @@ const checkAnswerService = async (req: Request, res: Response) => {
 
   user.save();
   challenge.save();
-
   res.status(200).json({
     message: "Answer checked",
     totalQuestion: numberOfQuestion,
