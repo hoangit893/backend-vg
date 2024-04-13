@@ -6,7 +6,6 @@ import Challenge from "../models/Challenge.model";
 const checkAnswerService = async (req: Request, res: Response) => {
   const challengeId = req.body.challengeId;
   const answerList = req.body.answerList;
-  const userAnswer = req.body.userAnswer;
   const username = req.headers.username?.toString();
   let correctAnswer = 0;
   const checkAnswer = async (questionId: string, userAnswer: any) => {
@@ -63,7 +62,8 @@ const checkAnswerService = async (req: Request, res: Response) => {
       point += pointFromQuestion;
     }
   }
-  user?.challengeList.push({
+
+  user.challengeList.push({
     challengeId: challengeId,
     point,
   });

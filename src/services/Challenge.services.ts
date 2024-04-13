@@ -188,6 +188,23 @@ const deleteChallengeService = async (challengeId: string) => {
   }
 };
 
+const getStatisticsService = async (startDate: Date, endDate: Date) => {
+  const challengeList = await Challenge.find({});
+
+  // const statistics = challengeList.map(async (challenge) => {
+  //   while(startDate <= endDate) {
+  //     challenge.userList.filter((user) => {
+
+  //     });
+  //     return {
+  //       challengeId: challenge._id,
+  //       challengeName: challenge.challengeName,
+  //       questionList: questionList,
+  //     };
+  //   }
+  // });
+};
+
 // const addUserToChallengeService = async (userId: any, challengeId: any) => {
 //   const challenge = await Challenge.findOne({
 //     _id: challengeId,

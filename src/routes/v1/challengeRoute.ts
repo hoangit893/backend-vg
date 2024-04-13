@@ -8,6 +8,7 @@ import {
   deleteChallenge,
 } from "../../controllers/Challenge.controller";
 import { checkAnswerService } from "../../services/Answer.services";
+import { getRankListService } from "../../services/User.services";
 
 const challengeRoute = express.Router();
 
@@ -66,4 +67,9 @@ challengeRoute.delete(
 challengeRoute.post("/check-answers", auth, (req: Request, res: Response) => {
   checkAnswerService(req, res);
 });
+
+challengeRoute.get("/rank", (req: Request, res: Response) => {
+  getRankListService(req, res);
+});
+challengeRoute.get("/statistics", (req: Request, res: Response) => {});
 export default challengeRoute;

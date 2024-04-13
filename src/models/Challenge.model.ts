@@ -1,3 +1,4 @@
+import { date } from "joi";
 import mongoose, { ObjectId, Schema } from "mongoose";
 import MongooseDelete, {
   SoftDeleteModel,
@@ -44,6 +45,10 @@ const challengeSchema = new Schema({
       },
       point: {
         type: Number,
+      },
+      date: {
+        type: Date,
+        default: new Date(),
       },
     },
   ],

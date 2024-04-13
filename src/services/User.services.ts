@@ -4,6 +4,7 @@ import User from "../models/User.model";
 import { config } from "../configs/config";
 import { hideSensitiveData, sender } from "../helpers/utils";
 import { userUpdateValidation } from "../helpers/validation_schema";
+import { Request, Response } from "express";
 
 // const validateInput = (req: Request) => {
 //   const error: any = {};
@@ -241,6 +242,22 @@ const updateUserService = async (
   }
 };
 
+const getRankListService = async (req: Request, res: Response) => {
+  const rankList = await User.find({ role: "user", totalPoint: { $gt: 0 } })
+    .sort({ totalPoint: -1 })
+    .limit(5);
+
+  res.status(200).json({
+    rankList: rankList.map((user, index) => {
+      return {
+        rank: index + 1,
+        name: user.name,
+        totalPoint: Math.round(user.totalPoint),
+      };
+    }),
+  });
+};
+
 export {
   createUserService,
   findByUsername,
@@ -249,4 +266,5 @@ export {
   forgotPasswordService,
   resetPasswordService,
   updateUserService,
+  getRankListService,
 };
