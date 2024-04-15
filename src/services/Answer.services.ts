@@ -16,24 +16,41 @@ const checkAnswerService = async (req: Request, res: Response) => {
       return;
     }
     switch (question.type) {
-      case "single-choice":
+      case "single-choice": {
         const correctAnswer = question.answerList.find(
           (answer: any) => answer.isCorrect === true
         );
         return correctAnswer?._id.toString() === userAnswer[0];
-      case "multi-choice":
-        return question.answerList.every((answer: any) => {
-          return (
-            answer.isCorrect === true &&
-            userAnswer.includes(answer._id.toString())
-          );
+      }
+      case "multi-choice": {
+        let isCorrect = false;
+        const correctList = question.answerList.map((answer: any) => {
+          if (answer.isCorrect) {
+            return answer._id.toString();
+          }
         });
-      case "arrange":
-        console.log(question.answerList);
-        console.log(answerList);
-        return question.answerList.every((answer: any, index: number) => {
-          return answer._id.toString() == userAnswer[index];
-        });
+
+        for (let i = 0; i < userAnswer.length; i++) {
+          if (correctList.includes(userAnswer[i])) {
+            isCorrect = true;
+          } else {
+            isCorrect = false;
+            break;
+          }
+        }
+        return isCorrect;
+      }
+      case "arrange": {
+        let correctList = question.answerList.map((answer: any) =>
+          answer._id.toString()
+        );
+        for (let i = 0; i < correctList.length; i++) {
+          if (correctList[i] !== userAnswer[i]) {
+            return false;
+          }
+        }
+        return true;
+      }
       default:
         // res.status(400).send("Invalid question type");
         return;

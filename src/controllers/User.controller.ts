@@ -85,8 +85,9 @@ const updateUser = async (req: Request, res: Response) => {
 };
 
 const getVistingUser = async (req: Request, res: Response) => {
-  const now = dayjs(Date.now()).unix() - 60 * 60;
+  const now = dayjs().subtract(5, "minute").unix();
   const activeUser = await User.countDocuments({ lastVisit: { $gt: now } });
+  console.log(await User.find({ lastVisit: { $gt: now } }));
   res.status(200).json({ activeUser });
 };
 

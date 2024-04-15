@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from "express";
 import User from "../models/User.model";
+import dayjs from "dayjs";
 
 const jwt = require("jsonwebtoken");
 const { config } = require("../configs/config");
@@ -18,7 +19,7 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
         res.status(401).send("Unauthorized");
         return;
       }
-      user.lastVisit = new Date().toISOString();
+      user.lastVisit = dayjs().unix();
       await user.save();
       next();
     } else {

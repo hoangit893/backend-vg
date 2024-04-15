@@ -1,3 +1,4 @@
+import dayjs from "dayjs";
 import mongoose from "mongoose";
 import MongooseDelete from "mongoose-delete";
 
@@ -28,8 +29,8 @@ const userSchema = new mongoose.Schema({
     default: Date.now,
   },
   lastVisit: {
-    type: String,
-    default: new Date().toISOString(),
+    type: Number,
+    default: dayjs().unix(),
   },
   avatarImg: {
     type: String,
