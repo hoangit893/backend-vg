@@ -103,6 +103,13 @@ const createChallengeService = async ({
     };
   }
 
+  if (point < 1) {
+    return {
+      status: 400,
+      message: { error: "Invalid point" },
+    };
+  }
+
   try {
     const challenge = new Challenge({
       challengeName,
@@ -136,7 +143,7 @@ const updateChallengeService = async (
     challengeName?: string;
     level?: string;
     topicName?: string;
-    point?: number;
+    point: number;
     imageUrl?: string;
     description?: string;
   }
@@ -156,6 +163,13 @@ const updateChallengeService = async (
     return {
       status: 400,
       message: "Challenge name already exists",
+    };
+  }
+
+  if (updateData.point < 1) {
+    return {
+      status: 400,
+      message: "Invalid point",
     };
   }
 

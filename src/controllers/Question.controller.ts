@@ -115,7 +115,7 @@ const updateQuestion = async (req: Request, res: Response) => {
     return;
   }
   try {
-    await Question.updateOne({ _id: question }, updateQuestion);
+    await Question.updateOne({ _id: questionId }, updateQuestion);
     res.status(200).json({ message: "Question updated" });
   } catch (error) {
     res.status(500).json({ message: error });
