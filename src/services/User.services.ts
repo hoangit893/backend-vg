@@ -223,6 +223,9 @@ const updateUserService = async (
       message: error.details[0].message,
     };
   }
+  if (updateData.password) {
+    updateData.password = await argon2.hash(updateData.password);
+  }
 
   const user = await User.findByIdAndUpdate({ _id: id }, updateData, {
     new: true,
