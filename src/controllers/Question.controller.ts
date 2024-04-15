@@ -58,12 +58,26 @@ const getQuestions = async (req: Request, res: Response) => {
   let role = req.headers.role;
   let queries = challengeId ? { challengeId: challengeId } : {};
   let questions = await Question.find(queries).populate("challengeId");
-  if (role !== "admin")
-    questions.forEach((question) => {
-      question.answerList.forEach((answer) => {
-        return { ...answer, isCorrect: undefined };
+
+  if (role != "admin") {
+    const hide = questions.map((question) => {
+      const answerList = question.answerList.map((answer) => {
+        return {
+          value: answer.value,
+          _id: answer._id,
+        };
       });
+
+      return {
+        type: question.type,
+        question: question.question,
+        challengeId: question.challengeId,
+        answerList: answerList,
+      };
     });
+    res.status(200).json({ questionList: hide });
+    return;
+  }
 
   res.status(200).json({ questionList: questions });
 };

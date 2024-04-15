@@ -1,4 +1,3 @@
-import { number } from "joi";
 import mongoose from "mongoose";
 import MongooseDelete from "mongoose-delete";
 
@@ -28,9 +27,9 @@ const userSchema = new mongoose.Schema({
     type: Date,
     default: Date.now,
   },
-  lastLogin: {
-    type: Date,
-    default: Date.now,
+  lastVisit: {
+    type: String,
+    default: new Date().toISOString(),
   },
   avatarImg: {
     type: String,

@@ -20,3 +20,12 @@ export default function hideSensitiveData(data: {
 
   return data;
 }
+
+export function hideCorrectAnswer(data: any[]) {
+  return data.map((item) => {
+    if (item.correctAnswer) {
+      item.correctAnswer = undefined;
+    }
+    return item;
+  });
+}

@@ -2,13 +2,17 @@ import express, { Request, Response } from "express";
 import { auth } from "../../middlewares/auth";
 import {
   createChallenge,
-  getChallenge,
+  getAllChallenge,
   getChallengeList,
+  getChallenge,
   updateChallenge,
   deleteChallenge,
+  getStatistics,
+  getMostPlayedChallenge,
 } from "../../controllers/Challenge.controller";
 import { checkAnswerService } from "../../services/Answer.services";
 import { getRankListService } from "../../services/User.services";
+import { getStatisticsService } from "../../services/Challenge.services";
 
 const challengeRoute = express.Router();
 
@@ -64,6 +68,10 @@ challengeRoute.delete(
   }
 );
 
+challengeRoute.get("/all", (req: Request, res: Response) => {
+  getAllChallenge(req, res);
+});
+
 challengeRoute.post("/check-answers", auth, (req: Request, res: Response) => {
   checkAnswerService(req, res);
 });
@@ -71,5 +79,11 @@ challengeRoute.post("/check-answers", auth, (req: Request, res: Response) => {
 challengeRoute.get("/rank", (req: Request, res: Response) => {
   getRankListService(req, res);
 });
-challengeRoute.get("/statistics", (req: Request, res: Response) => {});
+challengeRoute.get("/statistics", (req: Request, res: Response) => {
+  getStatistics(req, res);
+});
+
+challengeRoute.get("/most-played", (req: Request, res: Response) => {
+  getMostPlayedChallenge(req, res);
+});
 export default challengeRoute;

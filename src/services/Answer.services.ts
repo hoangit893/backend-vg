@@ -1,7 +1,8 @@
-import e, { Request, Response } from "express";
+import { Request, Response } from "express";
 import Question from "../models/Question.model";
 import User from "../models/User.model";
 import Challenge from "../models/Challenge.model";
+import UserPlayRecord from "../models/UserPlayRecord.model";
 
 const checkAnswerService = async (req: Request, res: Response) => {
   const challengeId = req.body.challengeId;
@@ -28,8 +29,10 @@ const checkAnswerService = async (req: Request, res: Response) => {
           );
         });
       case "arrange":
+        console.log(question.answerList);
+        console.log(answerList);
         return question.answerList.every((answer: any, index: number) => {
-          return answer.value === userAnswer[index];
+          return answer._id.toString() == userAnswer[index];
         });
       default:
         // res.status(400).send("Invalid question type");
@@ -38,6 +41,7 @@ const checkAnswerService = async (req: Request, res: Response) => {
   };
 
   const user = await User.findOne({ username });
+
   if (!user) {
     res.status(400).send("User not found");
     return;
@@ -68,7 +72,14 @@ const checkAnswerService = async (req: Request, res: Response) => {
     point,
   });
 
-  challenge?.userList.push({ userId: user._id, point });
+  const newUserPlayRecord = new UserPlayRecord({
+    userId: user._id,
+    challengeId: challengeId,
+    point,
+    date: new Date(),
+  });
+
+  // challenge?.userList.push({ userId: user._id, point });
   // const question = await Question.findOne({ _id: questionId });
 
   // if (!question) {
@@ -136,7 +147,7 @@ const checkAnswerService = async (req: Request, res: Response) => {
   // }
 
   user.save();
-  challenge.save();
+  newUserPlayRecord.save();
   res.status(200).json({
     message: "Answer checked",
     totalQuestion: numberOfQuestion,
@@ -271,7 +282,7 @@ const checkAnswerServiceV2 = async (req: Request, res: Response) => {
 
   let challengeList = user.challengeList;
 
-  console.log(challengeList);
+  // console.log(challengeList);
 
   const currentChallenge = challengeList.find(
     (challenge: any) => challenge.challengeId._id?.toString() == challengeId

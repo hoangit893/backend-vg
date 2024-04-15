@@ -104,4 +104,13 @@ const deleteTopic = async (req: Request, res: Response) => {
   }
 };
 
-export { createTopic, getTopics, updateTopic, deleteTopic };
+const getAllTopics = async (req: Request, res: Response) => {
+  try {
+    const topics = await Topic.find();
+    res.status(200).json({ topics: topics });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export { createTopic, getTopics, updateTopic, deleteTopic, getAllTopics };

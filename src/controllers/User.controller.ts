@@ -1,7 +1,7 @@
 import { Request, Response } from "express";
+import dayjs from "dayjs";
 import {
   createUserService,
-  findByUsername,
   forgotPasswordService,
   isExistUser,
   loginUserService,
@@ -84,4 +84,17 @@ const updateUser = async (req: Request, res: Response) => {
     .json({ message: response.message, data: response.data });
 };
 
-export { createUser, loginUser, updateUser, forgotPassword, resetPassword };
+const getVistingUser = async (req: Request, res: Response) => {
+  const now = dayjs(Date.now()).unix() - 60 * 60;
+  const activeUser = await User.countDocuments({ lastVisit: { $gt: now } });
+  res.status(200).json({ activeUser });
+};
+
+export {
+  createUser,
+  loginUser,
+  updateUser,
+  forgotPassword,
+  resetPassword,
+  getVistingUser,
+};

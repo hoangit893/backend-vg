@@ -9,7 +9,7 @@ const getTopicsService = async (
 ) => {
   const total = await Topic.countDocuments(queries);
   const topics = await Topic.find(queries, {}, { skip: skip, limit: limit });
-  console.log(topics);
+  // console.log(topics);
   return {
     status: 200,
     message: {
