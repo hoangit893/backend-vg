@@ -1,4 +1,6 @@
 import { Request, Response, NextFunction } from "express";
+import User from "../models/User.model";
+import dayjs from "dayjs";
 
 const jwt = require("jsonwebtoken");
 const { config } = require("../configs/config");
@@ -11,6 +13,14 @@ export const auth = async (req: Request, res: Response, next: NextFunction) => {
       req.body.username = decoded.username;
       req.headers.username = decoded.username;
       req.headers.role = decoded.role;
+      const user = await User.findOne({ username: decoded.username });
+      if (!user) {
+        console.log("Unauthorized - 2");
+        res.status(401).send("Unauthorized");
+        return;
+      }
+      user.lastVisit = dayjs().unix();
+      await user.save();
       next();
     } else {
       console.log("Unauthorized - 1");

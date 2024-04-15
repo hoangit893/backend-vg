@@ -29,17 +29,22 @@ const createTopic = async (req: Request, res: Response) => {
 };
 
 const getTopics = async (req: Request, res: Response) => {
-  let page = Number(req.query.page);
-  let pageSize = Number(req.query.pageSize);
-  if (!page || !pageSize) {
-    page = 1;
-    pageSize = 10;
-  }
+  const { topicName } = req.query;
+
+  const queries = topicName
+    ? { topicName: { $regex: topicName, $options: "i" } }
+    : {};
+
+  const skip = (Number(req.query.page) - 1) * Number(req.query.pageSize);
+  const limit = Number(req.query.pageSize) || 10;
+
+  console.log(queries);
 
   try {
-    const topics = await getTopicsService(Number(page), Number(pageSize));
+    const topics = await getTopicsService(queries, skip, limit);
     res.status(topics.status).json(topics.message);
   } catch (error) {
+    console.log(error);
     res.status(500).json({ error: "Internal server error" });
   }
 };
@@ -92,10 +97,20 @@ const deleteTopic = async (req: Request, res: Response) => {
       return;
     }
     await Topic.deleteById(topicId);
+    await Challenge.delete({ topicId: topicId });
     res.status(200).json({ message: "Topic deleted" });
   } catch (error) {
     res.status(500).json({ error: "Internal server error" });
   }
 };
 
-export { createTopic, getTopics, updateTopic, deleteTopic };
+const getAllTopics = async (req: Request, res: Response) => {
+  try {
+    const topics = await Topic.find();
+    res.status(200).json({ topics: topics });
+  } catch (error) {
+    res.status(500).json({ error: "Internal server error" });
+  }
+};
+
+export { createTopic, getTopics, updateTopic, deleteTopic, getAllTopics };

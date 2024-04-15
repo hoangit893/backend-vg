@@ -33,7 +33,6 @@ const questionSchema = new Schema({
         isCorrect: {
           type: Boolean,
           default: false,
-          required: true,
         },
         index: Number,
       },

@@ -5,7 +5,7 @@
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1",
-    "start": "nodemon",
+    "start": "nodemon --exitcrash",
     "production": "npx pm2 start npm --name be --restart-delay=1000 -- run start "
   },
   "author": "",
@@ -28,6 +28,7 @@
     "argon2": "^0.40.1",
     "chalk": "^4.1.2",
     "cors": "^2.8.5",
+    "dayjs": "^1.11.10",
     "dot-env": "^0.0.1",
     "dotenv": "^16.4.5",
     "esm": "^3.2.25",

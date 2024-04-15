@@ -1,5 +1,9 @@
 import { Request, Response } from "express";
-import { createTopic, getTopics } from "../../controllers/Topic.controller";
+import {
+  createTopic,
+  getAllTopics,
+  getTopics,
+} from "../../controllers/Topic.controller";
 import exp from "constants";
 const topicRoute = require("express").Router();
 import { auth } from "../../middlewares/auth";
@@ -24,6 +28,10 @@ topicRoute.post("/create", auth, (req: Request, res: Response) => {
 
 topicRoute.get("/", auth, async (req: Request, res: Response) => {
   getTopics(req, res);
+});
+
+topicRoute.get("/all", auth, async (req: Request, res: Response) => {
+  getAllTopics(req, res);
 });
 
 topicRoute.put(

@@ -5,16 +5,20 @@ import {
   getChallengeListService,
   updateChallengeService,
   deleteChallengeService,
+  getAllChallengeService,
+  getStatisticsService,
+  getMostPlayedChallengeService,
 } from "../services/Challenge.services";
+
+const getAllChallenge = async (req: Request, res: Response) => {
+  const response = await getAllChallengeService();
+  res.status(response.status).json(response.message);
+};
 
 const getChallenge = async (req: Request, res: Response) => {
   const challengeId = req.params.challengeId;
-  try {
-    const response = await getChallengeService(challengeId);
-    res.status(response.status).json(response.message);
-  } catch (error) {
-    res.status(500).json({ error: "Internal server error" });
-  }
+  const response = await getChallengeService(challengeId);
+  res.status(response.status).json(response.message);
 };
 
 const getChallengeList = async (req: Request, res: Response) => {
@@ -106,10 +110,29 @@ const deleteChallenge = async (req: Request, res: Response) => {
   res.status(response.status).json(response.message);
 };
 
+const getStatistics = async (req: Request, res: Response) => {
+  const startDate = req.query.startDate as string;
+  const endDate = req.query.endDate as string;
+  if (!startDate || !endDate) {
+    res.status(400).json({ message: "startDate and endDate are required" });
+    return;
+  }
+  const response = await getStatisticsService(startDate, endDate);
+  res.status(response.status).json(response.message);
+};
+
+const getMostPlayedChallenge = async (req: Request, res: Response) => {
+  const response = await getMostPlayedChallengeService();
+  res.status(response.status).json(response.message);
+};
+
 export {
-  getChallenge,
+  getAllChallenge,
   createChallenge,
   getChallengeList,
   updateChallenge,
+  getChallenge,
   deleteChallenge,
+  getMostPlayedChallenge,
+  getStatistics,
 };

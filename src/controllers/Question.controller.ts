@@ -16,7 +16,7 @@ const createQuestion = async (req: Request, res: Response) => {
     error.push("Question is required");
   }
   if (!challengeId) {
-    error.push("Challenge name is required");
+    error.push("ChallengeId is required");
   }
 
   if (!answerList && type !== "arrange") {
@@ -58,12 +58,27 @@ const getQuestions = async (req: Request, res: Response) => {
   let role = req.headers.role;
   let queries = challengeId ? { challengeId: challengeId } : {};
   let questions = await Question.find(queries).populate("challengeId");
-  if (role !== "admin")
-    questions.forEach((question) => {
-      question.answerList.forEach((answer) => {
-        return { ...answer, isCorrect: undefined };
+
+  if (role != "admin") {
+    const hide = questions.map((question) => {
+      const answerList = question.answerList.map((answer) => {
+        return {
+          value: answer.value,
+          _id: answer._id,
+        };
       });
+
+      return {
+        _id: question._id,
+        type: question.type,
+        question: question.question,
+        challengeId: question.challengeId,
+        answerList: answerList,
+      };
     });
+    res.status(200).json({ questionList: hide });
+    return;
+  }
 
   res.status(200).json({ questionList: questions });
 };
@@ -100,7 +115,7 @@ const updateQuestion = async (req: Request, res: Response) => {
     return;
   }
   try {
-    await Question.updateOne({ _id: question }, updateQuestion);
+    await Question.updateOne({ _id: questionId }, updateQuestion);
     res.status(200).json({ message: "Question updated" });
   } catch (error) {
     res.status(500).json({ message: error });

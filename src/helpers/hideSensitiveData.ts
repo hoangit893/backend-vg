@@ -10,13 +10,22 @@ export default function hideSensitiveData(data: {
   if (data.__v) {
     data.__v = undefined;
   }
-  if (data.role) {
-    data.role = undefined;
-  }
+  // if (data.role) {
+  //   data.role = undefined;
+  // }
 
   if (data._id) {
     data._id = undefined;
   }
 
   return data;
+}
+
+export function hideCorrectAnswer(data: any[]) {
+  return data.map((item) => {
+    if (item.correctAnswer) {
+      item.correctAnswer = undefined;
+    }
+    return item;
+  });
 }

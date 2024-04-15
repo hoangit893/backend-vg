@@ -4,7 +4,7 @@ import User from "../models/User.model";
 import { config } from "../configs/config";
 import { hideSensitiveData, sender } from "../helpers/utils";
 import { userUpdateValidation } from "../helpers/validation_schema";
-import { ObjectId } from "mongoose";
+import { Request, Response } from "express";
 
 // const validateInput = (req: Request) => {
 //   const error: any = {};
@@ -49,7 +49,14 @@ import { ObjectId } from "mongoose";
 // };
 
 const findByUsername = async (username: string) => {
-  return User.findOne({ username: username });
+  const user = await User.findOne({ username: username });
+  if (!user) {
+    return {
+      status: 400,
+      message: "User not found",
+    };
+  }
+  return hideSensitiveData(user);
 };
 
 const isExistUser = async (username: String, email?: String) => {
@@ -76,6 +83,7 @@ const createUserService = async ({
     username,
     email,
     password: await argon2.hash(password),
+    challengeList: [],
   });
 
   await user.save();
@@ -109,6 +117,8 @@ const loginUserService = async ({
         status: 200,
         message: {
           username: user.username,
+          role: user.role,
+          user: hideSensitiveData(user),
           token: token,
         },
       };
@@ -213,6 +223,9 @@ const updateUserService = async (
       message: error.details[0].message,
     };
   }
+  if (updateData.password) {
+    updateData.password = await argon2.hash(updateData.password);
+  }
 
   const user = await User.findByIdAndUpdate({ _id: id }, updateData, {
     new: true,
@@ -232,6 +245,22 @@ const updateUserService = async (
   }
 };
 
+const getRankListService = async (req: Request, res: Response) => {
+  const rankList = await User.find({ role: "user", totalPoint: { $gt: 0 } })
+    .sort({ totalPoint: -1 })
+    .limit(5);
+
+  res.status(200).json({
+    rankList: rankList.map((user, index) => {
+      return {
+        rank: index + 1,
+        name: user.name,
+        totalPoint: Math.round(user.totalPoint),
+      };
+    }),
+  });
+};
+
 export {
   createUserService,
   findByUsername,
@@ -240,4 +269,5 @@ export {
   forgotPasswordService,
   resetPasswordService,
   updateUserService,
+  getRankListService,
 };

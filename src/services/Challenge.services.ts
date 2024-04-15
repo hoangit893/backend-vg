@@ -1,5 +1,8 @@
 import Challenge from "../models/Challenge.model";
+import Question from "../models/Question.model";
 import Topic from "../models/Topic.model";
+import UserPlayRecord from "../models/UserPlayRecord.model";
+import dayjs from "dayjs";
 
 const getChallengeService = async (challengeId: string) => {
   const challenge = await Challenge.findOne({
@@ -26,9 +29,16 @@ const getChallengeService = async (challengeId: string) => {
 const getChallengeListService = async (queries: any) => {
   let page = queries.page ? Number(queries.page) : 1;
   let pageSize = queries.pageSize ? Number(queries.pageSize) : 10;
-  const query = { ...queries, page: undefined, pageSize: undefined };
+  const query: any = {};
+  query.topicId = queries.topicId ? queries.topicId : { $ne: null };
+  query.level = queries.level ? queries.level : { $ne: null };
+  query.challengeName = queries.challengeName
+    ? { $regex: queries.challengeName, $options: "i" }
+    : { $ne: null };
+
+  // console.log(query);
   const total = await Challenge.countDocuments({ ...query });
-  const challengeList = await Challenge.find(
+  let challengeList = await Challenge.find(
     {
       ...query,
     },
@@ -38,6 +48,10 @@ const getChallengeListService = async (queries: any) => {
       limit: pageSize,
     }
   ).populate("topicId");
+
+  challengeList.filter((challenge) => {
+    return challenge.topicId == null ? false : true;
+  });
 
   return {
     status: 200,
@@ -63,11 +77,13 @@ const createChallengeService = async ({
   imageUrl?: string;
   description?: string;
 }) => {
-  const isExistChallenge = await Challenge.findOne({
+  const isExistChallenge = await Challenge.find({
     challengeName: challengeName,
   });
 
-  if (isExistChallenge) {
+  // console.log(isExistChallenge);
+
+  if (isExistChallenge.length > 0) {
     return {
       status: 400,
       message: {
@@ -84,6 +100,13 @@ const createChallengeService = async ({
     return {
       status: 400,
       message: { error: "Topic not found" },
+    };
+  }
+
+  if (point < 1) {
+    return {
+      status: 400,
+      message: { error: "Invalid point" },
     };
   }
 
@@ -120,7 +143,7 @@ const updateChallengeService = async (
     challengeName?: string;
     level?: string;
     topicName?: string;
-    point?: number;
+    point: number;
     imageUrl?: string;
     description?: string;
   }
@@ -143,6 +166,13 @@ const updateChallengeService = async (
     };
   }
 
+  if (updateData.point < 1) {
+    return {
+      status: 400,
+      message: "Invalid point",
+    };
+  }
+
   let result = await Challenge.updateOne({ _id: challengeId }, updateData);
   if (result.matchedCount === 0) {
     return {
@@ -160,6 +190,7 @@ const updateChallengeService = async (
 const deleteChallengeService = async (challengeId: string) => {
   try {
     await Challenge.deleteById(challengeId);
+    await Question.delete({ challengeId: challengeId });
     return {
       status: 200,
       message: "Challenge deleted",
@@ -173,10 +204,95 @@ const deleteChallengeService = async (challengeId: string) => {
   }
 };
 
+const getStatisticsService = async (startDate: string, endDate: string) => {
+  let unixStartDate = Number(startDate);
+  let unixEndDate = Number(endDate);
+  // console.log(unixStartDate, unixEndDate);
+
+  if (isNaN(unixStartDate) || isNaN(unixEndDate)) {
+    return {
+      status: 400,
+      message: {
+        statistics: "Invalid date",
+      },
+    };
+  }
+
+  let statistics: { date: string; totalPlay: number }[] = [];
+
+  const recordList = await UserPlayRecord.find({});
+  // console.log(recordList);
+
+  let from: number = unixStartDate;
+  let to: number;
+
+  while (from < unixEndDate) {
+    to = from + 86400;
+    let totalPlay = recordList.filter((record) => {
+      return (
+        dayjs(record.date).unix() >= from && dayjs(record.date).unix() < to
+      );
+    }).length;
+    statistics.push({
+      date: dayjs.unix(from).format("DD-MM"),
+      totalPlay,
+    });
+    from = to;
+  }
+
+  return {
+    status: 200,
+    message: {
+      statistics,
+    },
+  };
+};
+
+const getAllChallengeService = async () => {
+  const challengeList = await Challenge.find({});
+  return {
+    status: 200,
+    message: {
+      challengeList,
+    },
+  };
+};
+
+const getMostPlayedChallengeService = async () => {
+  const challengeList = await Challenge.find({});
+  let mostPlayedList = [];
+  for (let i = 0; i < challengeList.length; i++) {
+    const challenge = challengeList[i];
+    const totalPlay = await UserPlayRecord.find({
+      challengeId: challenge._id,
+    }).countDocuments();
+    mostPlayedList.push({
+      challenge: challenge,
+      totalPlay,
+    });
+  }
+
+  mostPlayedList.sort((a, b) => {
+    return b.totalPlay - a.totalPlay;
+  });
+
+  mostPlayedList = mostPlayedList.slice(0, 4);
+
+  return {
+    status: 200,
+    message: {
+      mostPlayedList,
+    },
+  };
+};
+
 export {
   createChallengeService,
+  getMostPlayedChallengeService,
   getChallengeService,
   getChallengeListService,
+  getAllChallengeService,
   updateChallengeService,
   deleteChallengeService,
+  getStatisticsService,
 };
