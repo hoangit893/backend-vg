@@ -20,9 +20,11 @@ const checkAnswerService = async (req: Request, res: Response) => {
         const correctAnswer = question.answerList.find(
           (answer: any) => answer.isCorrect === true
         );
+        console.log(correctAnswer);
         return correctAnswer?._id.toString() === userAnswer[0];
       }
       case "multi-choice": {
+        console.log(userAnswer);
         let isCorrect = false;
         const correctList = question.answerList.map((answer: any) => {
           if (answer.isCorrect) {
@@ -41,6 +43,7 @@ const checkAnswerService = async (req: Request, res: Response) => {
         return isCorrect;
       }
       case "arrange": {
+        console.log(userAnswer);
         let correctList = question.answerList.map((answer: any) =>
           answer._id.toString()
         );

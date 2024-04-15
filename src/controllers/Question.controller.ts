@@ -69,6 +69,7 @@ const getQuestions = async (req: Request, res: Response) => {
       });
 
       return {
+        _id: question._id,
         type: question.type,
         question: question.question,
         challengeId: question.challengeId,
