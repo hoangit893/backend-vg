@@ -4,7 +4,7 @@ import express, { NextFunction, Request, Response } from "express";
 import { config } from "./configs/config";
 import { connectDB } from "./configs/db";
 import cors from "cors";
-import https from "http";
+import https from "https";
 import Logging from "./helpers/Logging";
 const jwt = require("jsonwebtoken");
 const hsts = require("hsts");
@@ -13,7 +13,6 @@ const hsts = require("hsts");
 import apiV1 from "./routes/v1/Routes";
 
 const app = express();
-
 app.use(
   hsts({
     maxAge: 31536000, // Must be at least 1 year to be approved
@@ -25,7 +24,22 @@ app.use(
 //* CORS
 // app.use(cors());
 
-var whitelist = ["http://tiengvietlade.click", "https://tiengvietlade.click"];
+import fs from "fs";
+
+// Your existing app configuration...
+
+const privateKey = fs.readFileSync("./cert/server.key", "utf8");
+const certificate = fs.readFileSync("./cert/server.crt", "utf8");
+
+const credentials = { key: privateKey, cert: certificate };
+
+var whitelist = [
+  "https://www.tiengvietlade.click",
+  "http://www.tiengvietlade.click",
+  "http://20.198.217.162:8081",
+  "http://tiengvietlade.click",
+  "https://tiengvietlade.click",
+];
 var corsOptionsDelegate = function (req: any, callback: any) {
   var corsOptions;
   if (whitelist.indexOf(req.header("Origin")) !== -1) {
@@ -120,8 +134,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 connectDB().then((res) => {
-  https.createServer(app).listen(config.server.port, () => {
-    Logging.info(`Server is running on port ${config.server.port}`);
+  https.createServer(credentials, app).listen(443, () => {
+    Logging.info(`Server is running on port 443`);
   });
   // app.listen(config.server.port, () => {
   //   Logging.info(`Server is running on port ${config.server.port}`);
