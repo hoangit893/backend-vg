@@ -23,8 +23,18 @@ app.use(
 );
 // ** MIDDLEWARES **
 //* CORS
-app.use(cors());
+// app.use(cors());
 
+var whitelist = ["http://tiengvietlade.click", "https://tiengvietlade.click"];
+var corsOptionsDelegate = function (req: any, callback: any) {
+  var corsOptions;
+  if (whitelist.indexOf(req.header("Origin")) !== -1) {
+    corsOptions = { origin: true }; // reflect (enable) the requested origin in the CORS response
+  } else {
+    corsOptions = { origin: false }; // disable CORS for this request
+  }
+  callback(null, corsOptions); // callback expects two parameters: error and options
+};
 //* JSON
 app.use(express.json());
 
@@ -43,6 +53,8 @@ app.use((req, res, next) => {
   );
   next();
 });
+
+app.use(cors(corsOptionsDelegate));
 
 app.use("/auth", async (req: Request, res: Response) => {
   try {
