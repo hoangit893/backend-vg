@@ -28,8 +28,8 @@ import fs from "fs";
 
 // Your existing app configuration...
 
-const privateKey = fs.readFileSync("./cert/server.key", "utf8");
-const certificate = fs.readFileSync("./cert/server.crt", "utf8");
+const privateKey = fs.readFileSync("./cert/key.pem", "utf8");
+const certificate = fs.readFileSync("./cert/cert.pem", "utf8");
 
 const credentials = { key: privateKey, cert: certificate };
 
@@ -37,8 +37,15 @@ var whitelist = [
   "https://www.tiengvietlade.click",
   "http://www.tiengvietlade.click",
   "http://20.198.217.162:8081",
+  "http://20.198.217.162:8088",
   "http://tiengvietlade.click",
   "https://tiengvietlade.click",
+  "http://admin.tiengvietlade.click",
+  "https://admin.tiengvietlade.click",
+  "http://www.admin.tiengvietlade.click",
+  "https://www.admin.tiengvietlade.click",
+  "http://20.198.217.162",
+  "http://localhost:5173",
 ];
 var corsOptionsDelegate = function (req: any, callback: any) {
   var corsOptions;
@@ -140,5 +147,5 @@ connectDB().then((res) => {
   // app.listen(config.server.port, () => {
   //   Logging.info(`Server is running on port ${config.server.port}`);
   // });
-  console.log(res);
+  // console.log(res);
 });
