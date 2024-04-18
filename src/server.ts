@@ -141,11 +141,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 });
 
 connectDB().then((res) => {
-  https.createServer(credentials, app).listen(443, () => {
-    Logging.info(`Server is running on port 443`);
-  });
-  // app.listen(config.server.port, () => {
-  //   Logging.info(`Server is running on port ${config.server.port}`);
+  // https.createServer(app).listen(3000, () => {
+  //   Logging.info(`Server is running on port 3000`);
   // });
-  // console.log(res);
+  app.listen(config.server.port, () => {
+    Logging.info(`Server is running on port ${config.server.port}`);
+  });
+  console.log(res);
 });
